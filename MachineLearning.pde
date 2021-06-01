@@ -1,10 +1,11 @@
 int XNumber = 25;
 int YNumber = 25;
+float obstacleSaturation = 3;
 Map map;
 
 void setup(){
   fullScreen();
-  map = new Map(XNumber, YNumber);
+  map = new Map(XNumber, YNumber, obstacleSaturation);
 }
 
 

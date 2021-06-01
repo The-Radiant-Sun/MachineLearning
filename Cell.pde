@@ -1,22 +1,28 @@
 class Cell{
   float x, y;
-  float w, h;
-  boolean b;
+  float cellWidth, cellHeight;
+  boolean isWall, isOccupied, isGoal;
   
-  Cell(float t_x, float t_y, float t_w, float t_h, boolean t_b){
+  Cell(float t_x, float t_y, float t_cellWidth, float t_cellHeight, boolean t_isWall, boolean t_isOccupied, boolean t_isGoal){
     x = t_x;
     y = t_y;
-    w = t_w;
-    h = t_h;
-    b = t_b;
+    cellWidth = t_cellWidth;
+    cellHeight = t_cellHeight;
+    isWall = t_isWall;
+    isOccupied = t_isOccupied;
+    isGoal = t_isGoal;
   }
   
   void display(){
-    if(this.b){
+    if(this.isWall){
       fill(0);
+    } else if(this.isOccupied) {
+      fill(0, 128, 0);
+    } else if(this.isGoal) {
+      fill(255, 0, 0);
     } else {
       fill(255);
     }
-    rect(this.x, this.y, this.x + this.w, this.y + this.h);
+    rect(this.x, this.y, this.x + this.cellWidth, this.y + this.cellHeight);
   }
 }
