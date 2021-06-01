@@ -1,6 +1,7 @@
 int XNumber = 25;
 int YNumber = 25;
-float obstacleSaturation = 3;
+float obstacleSaturation = 5;
+
 Map map;
 
 void setup(){

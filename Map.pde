@@ -30,7 +30,7 @@ class Map{
           isWall = false;
         }
 
-        cells[x][y] = new Cell(width/cellXNumbers * x, height/cellYNumbers * y, cellWidth, cellHeight, isWall, isOccupied, isGoal);
+        cells[x][y] = new Cell(width/cellXNumbers * x, height/cellYNumbers * y, cellWidth, cellHeight, isWall, isOccupied, );
         walls[x][y] = isWall;
       }
     }
