@@ -21,11 +21,11 @@ class Map{
     cells = new Cell[cellXNumbers][cellYNumbers];
     walls = new boolean[cellXNumbers][cellYNumbers];
 
-    goal[0] = 0;
-    goal[1] = 0;
+    goal[0] = width / cellXNumbers * int(random(cellXNumbers - 1));
+    goal[1] = height / cellYNumbers * int(random(cellYNumbers - 1));
     
-    spawn[0] = width / cellXNumbers * (cellXNumbers - 1);
-    spawn[1] = height / cellYNumbers * (cellYNumbers - 1);
+    spawn[0] = width / cellXNumbers * int(random(cellXNumbers - 1));
+    spawn[1] = height / cellYNumbers * int(random(cellYNumbers - 1));
     
     for(int x = 0; x < cellXNumbers; x++){
       for(int y = 0; y < cellYNumbers; y++){

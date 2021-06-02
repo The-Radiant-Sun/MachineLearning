@@ -58,10 +58,11 @@ class Cell{
       fill(255);
       stroke(255);
     }
+
     rect(this.x, this.y, this.x + this.cellWidth, this.y + this.cellHeight);
   }
   
   float distanceTo(int[] end) {
-    return abs(x - end[0]) + abs(y - end[1]);
+    return abs(this.x - end[0]) + abs(this.y - end[1]);
   }
 }
