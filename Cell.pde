@@ -10,6 +10,8 @@ class Cell{
   float h;
   float f;
   
+  Cell parent;
+  
   Cell(float t_trueX, float t_trueY, float t_gridX, float t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, boolean t_isSpawn, boolean t_isGoal, boolean t_isOccupied){
     cellWidth = t_cellWidth;
     cellHeight = t_cellHeight;
@@ -25,10 +27,6 @@ class Cell{
     isWall = t_isWall;
     
     isOccupied = t_isOccupied;
-    
-    g = distanceTo(spawn);
-    h = distanceTo(goal);
-    f = g + h;
   }
   
   void display() {
@@ -49,10 +47,6 @@ class Cell{
       stroke(255);
     }
 
-    rect(this.x, this.y, this.x + this.cellWidth, this.y + this.cellHeight);
-  }
-  
-  float distanceTo(int[] end) {
-    return abs(this.x - end[0]) + abs(this.y - end[1]);
+    rect(this.trueX, this.trueY, this.trueX + this.cellWidth, this.trueY + this.cellHeight);
   }
 }
