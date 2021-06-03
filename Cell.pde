@@ -1,5 +1,5 @@
 class Cell{
-  float x, y;
+  float trueX, trueY, gridX, gridY;
   float cellWidth, cellHeight;
   boolean isWall, isOccupied, isGoal, isSpawn;
   
@@ -10,32 +10,22 @@ class Cell{
   float h;
   float f;
   
-  Cell(float t_x, float t_y, float t_cellWidth, float t_cellHeight, boolean t_isWall, boolean t_isOccupied, int[] t_spawn, int[] t_goal){
-    x = t_x;
-    y = t_y;
+  Cell(float t_trueX, float t_trueY, float t_gridX, float t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, boolean t_isSpawn, boolean t_isGoal, boolean t_isOccupied){
     cellWidth = t_cellWidth;
     cellHeight = t_cellHeight;
-    isOccupied = t_isOccupied;
-    spawn = t_spawn;
-    goal = t_goal;
     
-    if (x == goal[0] && y == goal[1]) {
-      isGoal = true;
-      isWall = false;
-    } else if (x == spawn[0] && y == spawn[1]) {
-      isSpawn = true;
-      isWall = false;
-    } else {
-      isGoal = false;
-      isSpawn = false;
+    trueX = t_trueX;
+    trueY = t_trueY;
+    
+    gridX = t_gridX;
+    gridY = t_gridY;
 
-      isWall = t_isWall;
-    }
+    isSpawn = t_isSpawn;
+    isGoal = t_isGoal;
+    isWall = t_isWall;
     
-    AStarValues();
-  }
-  
-  void AStarValues() {
+    isOccupied = t_isOccupied;
+    
     g = distanceTo(spawn);
     h = distanceTo(goal);
     f = g + h;

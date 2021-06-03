@@ -3,14 +3,15 @@ class Map{
   float cellWidth, cellHeight, obstacleChance;
   
   Cell[][] cells;
-  
-  boolean isWall, isOccupied, isGoal;
 
   boolean[][] walls;
-  int[] goal = new int[2];
-  int[] spawn = new int[2];
+  Cell goal;
+  Cell spawn;
   
   Map(int XNumber, int YNumber, float obstacleSaturation){
+    boolean isWall, isOccupied, isGoal, isSpawn;
+    int[] goalPos, spawnPos;
+    
     cellXNumbers = XNumber;
     cellYNumbers = YNumber;
     cellWidth = width/cellXNumbers;
@@ -20,23 +21,37 @@ class Map{
     
     cells = new Cell[cellXNumbers][cellYNumbers];
     walls = new boolean[cellXNumbers][cellYNumbers];
-
-    goal[0] = width / cellXNumbers * int(random(cellXNumbers - 1));
-    goal[1] = height / cellYNumbers * int(random(cellYNumbers - 1));
     
-    spawn[0] = width / cellXNumbers * int(random(cellXNumbers - 1));
-    spawn[1] = height / cellYNumbers * int(random(cellYNumbers - 1));
+    isOccupied = false;
+    
+    goalPos = new int[2];
+    spawnPos = new int[2];
+
+    goalPos[0] = width / cellXNumbers * int(random(cellXNumbers - 1));
+    goalPos[1] = height / cellYNumbers * int(random(cellYNumbers - 1));
+    
+    spawnPos[0] = width / cellXNumbers * int(random(cellXNumbers - 1));
+    spawnPos[1] = height / cellYNumbers * int(random(cellYNumbers - 1));
     
     for(int x = 0; x < cellXNumbers; x++){
       for(int y = 0; y < cellYNumbers; y++){
-        if(random(1) < obstacleChance && !comparePos(x, y, goal) && !comparePos(x, y, spawn)) {
+        isGoal = comparePos(x, y, goalPos);
+        isSpawn = comparePos(x, y, spawnPos);
+        
+        if(random(1) < obstacleChance && !isGoal && !isSpawn) {
           isWall = true;
         } else {
           isWall = false;
         }
 
-        cells[x][y] = new Cell(width/cellXNumbers * x, height/cellYNumbers * y, cellWidth, cellHeight, isWall, isOccupied, spawn, goal);
+        cells[x][y] = new Cell(width/cellXNumbers * x, height/cellYNumbers * y, x, y, cellWidth, cellHeight, isWall, isSpawn, isGoal, isOccupied);
         walls[x][y] = isWall;
+        
+        if(isGoal) {
+          goal = cells[x][y];
+        } if(isSpawn) {
+                 spawn = cells[x][y];
+        }
       }
     }
   }
