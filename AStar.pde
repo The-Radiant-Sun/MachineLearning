@@ -51,18 +51,19 @@ class AStar{
           int newX = x + current.gridX;
           int newY = y + current.gridY;
           
-          if(newX < 0 || newY < 0 || newX > grid.length || newY > grid[grid.length - 1].length){
-            continue;
-          }
-          
-          Cell cell = grid[newX][newY];
-          
-          if((in(open, cell) || cell.g > current.g + 1 || cell.g == -1) && !cell.isWall && !(x == 0 && y == 0) && !((x == -1 || x == 1 ) && (y == -1 || y == 1))) {
-            cell.g = current.g + 1;
-            cell.f = cell.g + cell.getH();
+          if(!(newX < 0 || newY < 0 || newX > grid.length || newY > grid[grid.length - 1].length)){
+            Cell cell = grid[newX][newY];
             
-            if(!in(open, cell)) {
-              open.add(cell);
+            if((in(open, cell) || cell.g > current.g + 1 || cell.g == -1) && !cell.isWall && !(x == 0 && y == 0)) {
+              cell.g = current.g + 1;
+              cell.f = cell.g + cell.getH();
+              
+              cell.parent = current;
+              
+              if(!in(open, cell)) {
+                open.add(cell);
+                
+              }
             }
           }
         }
@@ -71,18 +72,19 @@ class AStar{
       current = findLowestF();
     }
     
-    if(in(open, goal)) {
+    if(goal == current) {
+      Cell reTrace = current;
       pathFound = true;
       while(true){
-        path.add(0, current);
-        current.activate();
-        if(current.parent == null) {
+        path.add(0, reTrace);
+        reTrace.activated = true;
+        reTrace.display();
+        if(reTrace.parent.isSpawn) {
           break;
         }
-        current = current.parent;
+        reTrace = reTrace.parent;
       }
     }
-    
     if(open.size() == 0) {
       pathFound = false;
     }

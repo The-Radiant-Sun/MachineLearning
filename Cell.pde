@@ -12,7 +12,7 @@ class Cell{
   
   float f;
   
-  Cell parent = null;
+  Cell parent;
   boolean activated, scanned;
   
   Cell(float t_trueX, float t_trueY, int t_gridX, int t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, float[] t_spawnPos, float[] t_goalPos, boolean t_isOccupied){
@@ -46,10 +46,6 @@ class Cell{
     return h;
   }
   
-  void activate() {
-    activated = true;
-  }
-  
   void changeColour(int v1, int v2, int v3) {
     fill(v1, v2, v3);
     stroke(v1, v2, v3);
@@ -62,10 +58,10 @@ class Cell{
       changeColour(255, 0, 0);
     } else if(isSpawn) {
       changeColour(0, 0, 255);
-    } else if(scanned) {
-      changeColour(0, 0, 128);
     } else if (activated) {
       changeColour(0, 255, 0);
+    } else if(scanned) {
+      changeColour(0, 0, 128);
     } else if(isOccupied) {
       changeColour(0, 128, 0);
     } else {

@@ -1,6 +1,6 @@
-int XNumber = 25;
-int YNumber = 25;
-float obstacleSaturation = 3;
+int XNumber = 40;
+int YNumber = 40;
+float obstacleSaturation = 4;
 
 Map map;
 AStar bestPath;
@@ -21,7 +21,9 @@ void setup(){
 
 
 void draw(){
-  bestPath.pathfind();
+  if(!bestPath.pathFound){
+    bestPath.pathfind();
+  }
   
   for(int x = 0; x < XNumber; x++){
     for(int y = 0; y < YNumber; y++){
