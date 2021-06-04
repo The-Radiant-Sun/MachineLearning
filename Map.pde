@@ -27,11 +27,11 @@ class Map{
     goalPos = new float[2];
     spawnPos = new float[2];
 
-    goalPos[0] = random(cellXNumbers - 1);
-    goalPos[1] = random(cellYNumbers - 1);
+    goalPos[0] = round(random(cellXNumbers - 1));
+    goalPos[1] =round(random(cellYNumbers - 1));
     
-    spawnPos[0] = random(cellXNumbers - 1);
-    spawnPos[1] = random(cellYNumbers - 1);
+    spawnPos[0] = round(random(cellXNumbers - 1));
+    spawnPos[1] = round(random(cellYNumbers - 1));
     
     for(int x = 0; x < cellXNumbers; x++){
       for(int y = 0; y < cellYNumbers; y++){

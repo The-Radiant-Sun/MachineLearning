@@ -3,6 +3,10 @@ class AStar{
   ArrayList<Cell> closed = new ArrayList<Cell>();
   
   ArrayList<Cell> path = new ArrayList<Cell>();
+  
+  boolean pathFound;
+  
+  Cell current;
 
   Cell[][] grid;
   Cell goal;
@@ -12,6 +16,8 @@ class AStar{
     open.add(t_spawn);
     
     goal = t_goal;
+    
+    current = open.get(0);
   }
   
   Cell findLowestF(){
@@ -34,16 +40,24 @@ class AStar{
   }
   
   void pathfind(){
-    Cell current = open.get(0);
-    
-    while(goal != current && open.size() > 0){
+    if(goal != current && open.size() > 0){
       closed.add(current);
+      open.remove(current);
+
+      current.scanned = true;
       
       for(int x = -1; x < 2; x++) {
         for(int y = -1; y < 2; y++) {
-          Cell cell = grid[x + current.gridX][y + current.gridY];
+          int newX = x + current.gridX;
+          int newY = y + current.gridY;
           
-          if((in(open, cell) || cell.g > current.g + 1) && !cell.isWall && (x == 0 && y == 0)) {
+          if(newX < 0 || newY < 0 || newX > grid.length || newY > grid[grid.length - 1].length){
+            continue;
+          }
+          
+          Cell cell = grid[newX][newY];
+          
+          if((in(open, cell) || cell.g > current.g + 1 || cell.g == -1) && !cell.isWall && !(x == 0 && y == 0) && !((x == -1 || x == 1 ) && (y == -1 || y == 1))) {
             cell.g = current.g + 1;
             cell.f = cell.g + cell.getH();
             
@@ -57,10 +71,20 @@ class AStar{
       current = findLowestF();
     }
     
-    while(current.parent != null){
-      path.add(0, current);
-      current.activate();
-      current = current.parent;
+    if(in(open, goal)) {
+      pathFound = true;
+      while(true){
+        path.add(0, current);
+        current.activate();
+        if(current.parent == null) {
+          break;
+        }
+        current = current.parent;
+      }
+    }
+    
+    if(open.size() == 0) {
+      pathFound = false;
     }
   }
 }

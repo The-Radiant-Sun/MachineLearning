@@ -7,13 +7,13 @@ class Cell{
   
   float[] goalPos;
   
-  float g;
-  float f;
-  
+  float g = -1;
   float h = -1;
   
+  float f;
+  
   Cell parent = null;
-  boolean activated;
+  boolean activated, scanned;
   
   Cell(float t_trueX, float t_trueY, int t_gridX, int t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, float[] t_spawnPos, float[] t_goalPos, boolean t_isOccupied){
     cellWidth = t_cellWidth;
@@ -32,6 +32,7 @@ class Cell{
     isWall = t_isWall;
     
     isOccupied = t_isOccupied;
+    scanned = false;
     
     if(isSpawn) {
       g = 0;
@@ -39,20 +40,7 @@ class Cell{
   }
   
   float getH() {
-    if(h == -1){
-      float cellXNumbers = width / (trueX / gridX);
-      float cellYNumbers = height / (trueY / gridY);
-
-      h = abs(gridX - goalPos[0]) + abs(gridY - goalPos[1]);
-      
-      float h_1 = abs(abs(gridX - cellXNumbers) - goalPos[0]) + abs(abs(gridY - cellYNumbers) - goalPos[1]);
-      float h_2 = abs(abs(goalPos[0] - cellXNumbers) - gridX) + abs(abs(goalPos[1] - cellYNumbers) - gridY);
-      
-      if (h > h_1) {
-        h = h_1;
-      } if (h > h_2) {
-        h = h_2;
-      }
+    if(h == -1){h = abs(gridX - goalPos[0]) + abs(gridY - goalPos[1]);
     }
     
     return h;
@@ -68,16 +56,18 @@ class Cell{
   }
   
   void display() {
-    if(this.isWall){
+    if(isWall){
       changeColour(0, 0, 0);
-    } else if(this.isGoal) {
+    } else if(isGoal) {
       changeColour(255, 0, 0);
-    } else if(this.isSpawn) {
+    } else if(isSpawn) {
       changeColour(0, 0, 255);
-    } else if(this.isOccupied) {
-      changeColour(0, 128, 0);
-    } else if (this.activated) {
+    } else if(scanned) {
+      changeColour(0, 0, 128);
+    } else if (activated) {
       changeColour(0, 255, 0);
+    } else if(isOccupied) {
+      changeColour(0, 128, 0);
     } else {
       changeColour(255, 255, 255);
     }
