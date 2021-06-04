@@ -2,7 +2,7 @@ class AStar{
   ArrayList<Cell> open = new ArrayList<Cell>();
   ArrayList<Cell> closed = new ArrayList<Cell>();
   
-  ArrayList<Cell> path = newArrayList<Cell>();
+  ArrayList<Cell> path = new ArrayList<Cell>();
 
   Cell[][] grid;
   Cell goal;
@@ -35,21 +35,21 @@ class AStar{
   
   void pathfind(){
     Cell current = open.get(0);
-    ArrayList<Cell> neighbours = new ArrayList<Cell>();
     
     while(goal != current && open.size() > 0){
       closed.add(current);
       
       for(int x = -1; x < 2; x++) {
         for(int y = -1; y < 2; y++) {
-          Cell cell = grid[x][y]
-          
-          if(!cell.isWall || in(closed, cell) || (x == 0 && y == 0)) {
-            continue;
-          }
+          Cell cell = grid[x + current.gridX][y + current.gridY];
           
           if((in(open, cell) || cell.g > current.g + 1) && !cell.isWall && (x == 0 && y == 0)) {
             cell.g = current.g + 1;
+            cell.f = cell.g + cell.getH();
+            
+            if(!in(open, cell)) {
+              open.add(cell);
+            }
           }
         }
       }

@@ -1,5 +1,7 @@
 class Cell{
-  float trueX, trueY, gridX, gridY;
+  float trueX, trueY;
+  int gridX, gridY;
+
   float cellWidth, cellHeight;
   boolean isWall, isOccupied, isGoal, isSpawn;
   
@@ -13,7 +15,7 @@ class Cell{
   Cell parent = null;
   boolean activated;
   
-  Cell(float t_trueX, float t_trueY, float t_gridX, float t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, float[] t_spawnPos, float[] t_goalPos, boolean t_isOccupied){
+  Cell(float t_trueX, float t_trueY, int t_gridX, int t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, float[] t_spawnPos, float[] t_goalPos, boolean t_isOccupied){
     cellWidth = t_cellWidth;
     cellHeight = t_cellHeight;
     
@@ -36,9 +38,21 @@ class Cell{
     }
   }
   
-  float getH(Cell goal) {
+  float getH() {
     if(h == -1){
+      float cellXNumbers = width / (trueX / gridX);
+      float cellYNumbers = height / (trueY / gridY);
+
       h = abs(gridX - goalPos[0]) + abs(gridY - goalPos[1]);
+      
+      float h_1 = abs(abs(gridX - cellXNumbers) - goalPos[0]) + abs(abs(gridY - cellYNumbers) - goalPos[1]);
+      float h_2 = abs(abs(goalPos[0] - cellXNumbers) - gridX) + abs(abs(goalPos[1] - cellYNumbers) - gridY);
+      
+      if (h > h_1) {
+        h = h_1;
+      } if (h > h_2) {
+        h = h_2;
+      }
     }
     
     return h;
