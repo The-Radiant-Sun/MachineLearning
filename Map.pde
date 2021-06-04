@@ -10,7 +10,7 @@ class Map{
   
   Map(int XNumber, int YNumber, float obstacleSaturation){
     boolean isWall, isOccupied, isGoal, isSpawn;
-    int[] goalPos, spawnPos;
+    float[] goalPos, spawnPos;
     
     cellXNumbers = XNumber;
     cellYNumbers = YNumber;
@@ -24,14 +24,14 @@ class Map{
     
     isOccupied = false;
     
-    goalPos = new int[2];
-    spawnPos = new int[2];
+    goalPos = new float[2];
+    spawnPos = new float[2];
 
-    goalPos[0] = int(random(cellXNumbers - 1));
-    goalPos[1] = int(random(cellYNumbers - 1));
+    goalPos[0] = random(cellXNumbers - 1);
+    goalPos[1] = random(cellYNumbers - 1);
     
-    spawnPos[0] = int(random(cellXNumbers - 1));
-    spawnPos[1] = int(random(cellYNumbers - 1));
+    spawnPos[0] = random(cellXNumbers - 1);
+    spawnPos[1] = random(cellYNumbers - 1);
     
     for(int x = 0; x < cellXNumbers; x++){
       for(int y = 0; y < cellYNumbers; y++){
@@ -44,7 +44,7 @@ class Map{
           isWall = false;
         }
 
-        cells[x][y] = new Cell(width/cellXNumbers * x, height/cellYNumbers * y, x, y, cellWidth, cellHeight, isWall, isSpawn, isGoal, isOccupied);
+        cells[x][y] = new Cell(width/cellXNumbers * x, height/cellYNumbers * y, x, y, cellWidth, cellHeight, isWall, spawnPos, goalPos, isOccupied);
         walls[x][y] = isWall;
         
         if(isGoal) {
@@ -56,7 +56,7 @@ class Map{
     }
   }
   
-  boolean comparePos(int x, int y, int[] end) {
+  boolean comparePos(float x, float y, float[] end) {
     return (x == end[0] && y == end[1]);
   }
 }
