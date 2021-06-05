@@ -2,7 +2,7 @@ int XNumber = 40;
 int YNumber = 40;
 float obstacleSaturation = 4;
 
-boolean startPath = false;
+boolean startPath;
 
 Map map;
 AStar bestPath;
@@ -10,6 +10,8 @@ AStar bestPath;
 void setup(){
   fullScreen();
   map = new Map(XNumber, YNumber, obstacleSaturation);
+  
+  startPath = false;
   
   for(int x = 0; x < XNumber; x++){
     for(int y = 0; y < YNumber; y++){
@@ -24,12 +26,10 @@ void setup(){
 
 void draw(){
   if(keyPressed) {
-    
     if(key == 'p' || key == 'P') {
       startPath = true;
     }
     if(key == 'r' || key == 'R') {
-      startPath = false;
       setup();
     }
   }

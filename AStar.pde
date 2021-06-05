@@ -51,7 +51,7 @@ class AStar{
           int newX = x + current.gridX;
           int newY = y + current.gridY;
           
-          if(!(newX < 0 || newY < 0 || newX > grid.length || newY > grid[grid.length - 1].length)){
+          if(!(newX < 0 || newY < 0 || newX >= grid.length || newY >= grid[grid.length - 1].length)){
             Cell cell = grid[newX][newY];
             
             if((in(open, cell) || cell.g > current.g + 1 || cell.g == -1) && !cell.isWall && !(x == 0 && y == 0) && !((x == -1 || x == 1) && (y == -1 || y == 1))) {
