@@ -28,7 +28,7 @@ class Map{
     spawnPos = new float[2];
 
     goalPos[0] = round(random(cellXNumbers - 1));
-    goalPos[1] =round(random(cellYNumbers - 1));
+    goalPos[1] = round(random(cellYNumbers - 1));
     
     spawnPos[0] = round(random(cellXNumbers - 1));
     spawnPos[1] = round(random(cellYNumbers - 1));

@@ -2,6 +2,8 @@ int XNumber = 40;
 int YNumber = 40;
 float obstacleSaturation = 4;
 
+boolean startPath = false;
+
 Map map;
 AStar bestPath;
 
@@ -21,7 +23,18 @@ void setup(){
 
 
 void draw(){
-  if(!bestPath.pathFound){
+  if(keyPressed) {
+    
+    if(key == 'p' || key == 'P') {
+      startPath = true;
+    }
+    if(key == 'r' || key == 'R') {
+      startPath = false;
+      setup();
+    }
+  }
+  
+  if(!bestPath.pathFound && startPath){
     bestPath.pathfind();
   }
   

@@ -52,7 +52,11 @@ class Cell{
   }
   
   void display() {
-    if(isWall){
+    if(mousePressed && (mouseX < trueX + cellWidth && mouseX > trueX) && (mouseY < trueY + cellHeight && mouseY > trueY)) {
+      isWall = !isWall;
+    }
+    
+    if(isWall) {
       changeColour(0, 0, 0);
     } else if(isGoal) {
       changeColour(255, 0, 0);
@@ -67,7 +71,7 @@ class Cell{
     } else {
       changeColour(255, 255, 255);
     }
-
+    
     rect(this.trueX, this.trueY, this.trueX + this.cellWidth, this.trueY + this.cellHeight);
   }
 }
