@@ -1,5 +1,5 @@
-int XNumber = 40;
-int YNumber = 40;
+int XNumber = 25;
+int YNumber = 25;
 float obstacleSaturation = 4;
 
 boolean startPath;
@@ -34,7 +34,7 @@ void draw(){
     }
   }
   
-  if(!bestPath.pathFound && startPath){
+  if(!bestPath.pathFound && startPath && bestPath.possiblePath){
     bestPath.pathfind();
   }
   

@@ -4,7 +4,7 @@ class AStar{
   
   ArrayList<Cell> path = new ArrayList<Cell>();
   
-  boolean pathFound;
+  boolean pathFound, possiblePath;
   
   Cell current;
 
@@ -18,6 +18,8 @@ class AStar{
     goal = t_goal;
     
     current = open.get(0);
+      
+    possiblePath = true;
   }
   
   Cell findLowestF(){
@@ -87,6 +89,9 @@ class AStar{
     }
     if(open.size() == 0) {
       pathFound = false;
+      possiblePath = false;
+      
+      print("Path not Found");
     }
   }
 }
