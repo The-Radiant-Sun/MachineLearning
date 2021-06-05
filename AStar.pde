@@ -49,14 +49,14 @@ class AStar{
       current.scanned = true;
       
       for(int x = -1; x < 2; x++) {
-        for(int y = -1; y < 2; y++) {
+        for(int y = -1; y < 2; y += 2) {
           int newX = x + current.gridX;
           int newY = y + current.gridY;
           
           if(!(newX < 0 || newY < 0 || newX >= grid.length || newY >= grid[grid.length - 1].length)){
             Cell cell = grid[newX][newY];
             
-            if((in(open, cell) || cell.g > current.g + 1 || cell.g == -1) && !cell.isWall && !(x == 0 && y == 0) && !((x == -1 || x == 1) && (y == -1 || y == 1))) {
+            if((in(open, cell) || cell.g > current.g + 1 || cell.g == -1) && !cell.isWall && !(x == 0 && y == 0)) {
               cell.g = current.g + 1;
               cell.f = cell.g + cell.getH();
               

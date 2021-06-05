@@ -14,8 +14,8 @@ class Map{
     
     cellXNumbers = XNumber;
     cellYNumbers = YNumber;
-    cellWidth = width/cellXNumbers;
-    cellHeight = height/cellYNumbers;
+    cellWidth = width / cellXNumbers / 2;
+    cellHeight = height / cellYNumbers / 2;
     
     obstacleChance = 1 / obstacleSaturation;
     
@@ -43,8 +43,15 @@ class Map{
         } else {
           isWall = false;
         }
-
-        cells[x][y] = new Cell(width/cellXNumbers * x, height/cellYNumbers * y, x, y, cellWidth, cellHeight, isWall, spawnPos, goalPos, isOccupied);
+        
+        float trueY = height/cellYNumbers * y + cellHeight;
+        float trueX = width/cellXNumbers * x + cellWidth;
+        
+        if(x % 2 == 1) {
+          trueY += cellHeight;
+        }
+        
+        cells[x][y] = new Cell(trueX, trueY, x, y, cellWidth, cellHeight, isWall, spawnPos, goalPos, isOccupied);
         walls[x][y] = isWall;
         
         if(isGoal) {

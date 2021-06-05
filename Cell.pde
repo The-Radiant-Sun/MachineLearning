@@ -72,6 +72,17 @@ class Cell{
       changeColour(255, 255, 255);
     }
     
-    rect(this.trueX, this.trueY, this.trueX + this.cellWidth, this.trueY + this.cellHeight);
+    hexagon(this.trueX, this.trueY, this.cellWidth * 133.1 / 100, this.cellHeight * 115.5 / 100);
+  }
+  
+  void hexagon(float x, float y, float w, float h) {
+    beginShape();
+    for (float i = 0; i < 6; i ++) {
+      float a = PI / 180 * 60  * i;
+      float sx = x + cos(a) * w;
+      float sy = y + sin(a) * h;
+      vertex(sx, sy);
+    }
+    endShape(CLOSE);
   }
 }
