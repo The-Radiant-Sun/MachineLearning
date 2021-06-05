@@ -65,7 +65,7 @@ class Cell{
     } else if (activated) {
       changeColour(0, 255, 0);
     } else if(scanned) {
-      changeColour(0, 0, 128);
+      changeColour(round(255 * g / 100), round(255 * h / 100), round(255 * f / 100));
     } else if(isOccupied) {
       changeColour(0, 128, 0);
     } else {
