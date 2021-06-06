@@ -72,7 +72,7 @@ class Cell{
       changeColour(255, 255, 255);
     }
     
-    hexagon(this.trueX, this.trueY, this.cellWidth * 133.1 / 100, this.cellHeight * 115.5 / 100);
+    hexagon(this.trueX, this.trueY, this.cellWidth * 4 / 3, this.cellHeight);
   }
   
   void hexagon(float x, float y, float w, float h) {

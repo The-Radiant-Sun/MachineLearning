@@ -1,5 +1,6 @@
 int XNumber = 25;
 int YNumber = 25;
+;
 float obstacleSaturation = 4;
 
 boolean startPath;
