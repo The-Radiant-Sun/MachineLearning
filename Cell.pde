@@ -52,8 +52,9 @@ class Cell{
   }
   
   void display() {
-    if(mousePressed && (mouseX < trueX + cellWidth && mouseX > trueX) && (mouseY < trueY + cellHeight && mouseY > trueY)) {
+    if(mousePressed && (mouseX < trueX + cellWidth && mouseX > trueX - cellWidth) && (mouseY < trueY + cellHeight && mouseY > trueY - cellHeight)) {
       isWall = !isWall;
+      delay(50);
     }
     
     if(isWall) {
