@@ -81,8 +81,6 @@ class Cell{
     }
     
     hexagon(trueX, trueY, cellWidth * 4 / 3, cellHeight);
-    changeColour(0, 0, 0);
-    text(getH(), trueX, trueY);
   }
   
   void hexagon(float x, float y, float w, float h) {
