@@ -40,7 +40,8 @@ class Cell{
   }
   
   float getH() {
-    if(h == -1){h = abs(gridX - goalPos[0]) + abs(gridY - goalPos[1]);
+    if(h == -1){
+      h = abs(width - trueX) + abs(height - trueY);
     }
     
     return h;
@@ -72,8 +73,9 @@ class Cell{
     } else {
       changeColour(255, 255, 255);
     }
-    
-    hexagon(this.trueX, this.trueY, this.cellWidth * 4 / 3, this.cellHeight);
+    hexagon(trueX, trueY, cellWidth * 4 / 3, cellHeight);
+    changeColour(0, 0, 0);
+    text(getH(), trueX, trueY);
   }
   
   void hexagon(float x, float y, float w, float h) {

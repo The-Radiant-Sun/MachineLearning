@@ -33,14 +33,22 @@ void draw(){
     if(key == 'r' || key == 'R') {
       setup();
     }
+    if(key == 'c' || key == 'C') {
+      for(int x = 0; x < XNumber; x++) {
+        for(int y = 0; y < YNumber; y++) {
+          map.cells[x][y].isWall = false;
+          map.walls[x][y] = false;
+        }
+      }
+    }
   }
   
-  if(!bestPath.pathFound && startPath && bestPath.possiblePath){
+  if(!bestPath.pathFound && startPath && bestPath.possiblePath) {
     bestPath.pathfind();
   }
   
-  for(int x = 0; x < XNumber; x++){
-    for(int y = 0; y < YNumber; y++){
+  for(int x = 0; x < XNumber; x++) {
+    for(int y = 0; y < YNumber; y++) {
       Cell cell = map.cells[x][y];
       cell.display();
     }

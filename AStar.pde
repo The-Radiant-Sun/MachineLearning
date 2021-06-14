@@ -49,7 +49,7 @@ class AStar{
       current.scanned = true;
       
       for(int x = -1; x < 2; x++) {
-        for(int y = ((current.gridX % 2 == 0) ? -1 : ((x == 0) ? -1 : 0)); y < ((x == 0) ? 2 : ((current.gridX % 2 == 0) ? 1 : 2)); y++) {
+        for(int y = ((x == 0) ? -1 : ((current.gridX % 2 == 0) ? -1 : 0)); y < ((x == 0) ? 2 : ((current.gridX % 2 == 0) ? 1 : 2)); y++) {
           
           int newX = x + current.gridX;
           int newY = y + current.gridY;
