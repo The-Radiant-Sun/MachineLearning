@@ -41,7 +41,13 @@ class Cell{
   
   float getH() {
     if(h == -1){
-      h = abs(width - trueX) + abs(height - trueY);
+      h = abs(goalPos[0] - gridX) + abs(goalPos[1] - gridY);
+      if((goalPos[0] != gridX && gridY > goalPos[1]) || (gridY < goalPos[1] && gridX != goalPos[0])) {
+        h--;
+      }
+      if((abs(gridX - goalPos[0]) == 1 && gridY < goalPos[1] && goalPos[0] % 2 == 1)){
+        h++;
+      }
     }
     
     return h;
@@ -73,6 +79,7 @@ class Cell{
     } else {
       changeColour(255, 255, 255);
     }
+    
     hexagon(trueX, trueY, cellWidth * 4 / 3, cellHeight);
     changeColour(0, 0, 0);
     text(getH(), trueX, trueY);
