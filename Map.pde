@@ -9,7 +9,7 @@ class Map{
   Cell spawn;
   
   Map(int XNumber, int YNumber, float obstacleSaturation){
-    boolean isWall, isOccupied, isGoal, isSpawn;
+    boolean isWall, isGoal, isSpawn;
     float[] goalPos, spawnPos;
     
     cellXNumbers = XNumber;
@@ -21,8 +21,6 @@ class Map{
     
     cells = new Cell[cellXNumbers][cellYNumbers];
     walls = new boolean[cellXNumbers][cellYNumbers];
-    
-    isOccupied = false;
     
     goalPos = new float[2];
     spawnPos = new float[2];
@@ -51,7 +49,7 @@ class Map{
           trueY += (height / 4 * 3) * 0.65 / cellYNumbers;
         }
         
-        cells[x][y] = new Cell(trueX, trueY, x, y, cellWidth, cellHeight, isWall, spawnPos, goalPos, isOccupied);
+        cells[x][y] = new Cell(trueX, trueY, x, y, cellWidth, cellHeight, isWall, spawnPos, goalPos);
         walls[x][y] = isWall;
         
         if(isGoal) {

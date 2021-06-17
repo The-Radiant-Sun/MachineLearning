@@ -3,7 +3,7 @@ class Cell{
   int gridX, gridY;
 
   float cellWidth, cellHeight;
-  boolean isWall, isOccupied, isGoal, isSpawn;
+  boolean isWall, isGoal, isSpawn;
   
   float[] goalPos;
   
@@ -15,7 +15,7 @@ class Cell{
   Cell parent;
   boolean activated, scanned;
   
-  Cell(float t_trueX, float t_trueY, int t_gridX, int t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, float[] t_spawnPos, float[] t_goalPos, boolean t_isOccupied){
+  Cell(float t_trueX, float t_trueY, int t_gridX, int t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, float[] t_spawnPos, float[] t_goalPos){
     cellWidth = t_cellWidth;
     cellHeight = t_cellHeight;
     
@@ -31,7 +31,6 @@ class Cell{
     isGoal = (gridX == goalPos[0] && gridY == goalPos[1]);
     isWall = t_isWall;
     
-    isOccupied = t_isOccupied;
     scanned = false;
     
     if(isSpawn) {
@@ -74,8 +73,6 @@ class Cell{
       changeColour(0, 255, 0);
     } else if(scanned) {
       changeColour(round(255 * g / 100) + 50, round(255 * h / 100) + 50, round(255 * f / 100) + 50);
-    } else if(isOccupied) {
-      changeColour(0, 128, 0);
     } else {
       changeColour(255, 255, 255);
     }
