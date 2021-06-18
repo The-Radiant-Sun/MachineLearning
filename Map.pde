@@ -59,6 +59,25 @@ class Map{
         }
       }
     }
+    
+    for(int x = 0; x < cellXNumbers; x++){
+      for(int y = 0; y < cellYNumbers; y++){
+        Cell current = cells[x][y];
+
+        for(int n_x = -1; n_x < 2; n_x++) {
+          for(int n_y = ((n_x == 0) ? -1 : ((current.gridX % 2 == 0) ? -1 : 0)); n_y < ((n_x == 0) ? 2 : ((current.gridX % 2 == 0) ? 1 : 2)); n_y++) {
+            int newX = n_x + current.gridX;
+            int newY = n_y + current.gridY;
+            
+            if((newX == 0 && newY == 0) || (newX < 0 || newY < 0 || newX >= cells.length || newY >= cells[cells.length - 1].length)) {
+              continue;
+            }
+            
+            current.neighbours.add(cells[newX][newY]);
+          }
+        }
+      }
+    }
   }
   
   boolean comparePos(float x, float y, float[] end) {

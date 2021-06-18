@@ -61,6 +61,11 @@ void draw(){
     bestPath.pathfind();
   }
   
+  if(!bestPath.possiblePath) {
+    setup();
+    startPath = true;
+  }
+  
   if(bestPath.pathFound && !spawnedBots) {
     spawnedBots = !spawnedBots;
     

@@ -48,32 +48,22 @@ class AStar{
 
       current.scanned = true;
       
-      for(int x = -1; x < 2; x++) {
-        for(int y = ((x == 0) ? -1 : ((current.gridX % 2 == 0) ? -1 : 0)); y < ((x == 0) ? 2 : ((current.gridX % 2 == 0) ? 1 : 2)); y++) {
-          
-          int newX = x + current.gridX;
-          int newY = y + current.gridY;
-          
-          if(!(newX < 0 || newY < 0 || newX >= grid.length || newY >= grid[grid.length - 1].length)){
-            Cell cell = grid[newX][newY];
-            
-            if((in(open, cell) || cell.g > current.g + 1 || cell.g == -1) && !cell.isWall && !(x == 0 && y == 0)) {
-              cell.g = current.g + 1;
-              cell.f = cell.g + cell.getH();
+      for(Cell neighbour : current.neighbours){
+          if((in(open, neighbour) || neighbour.g > current.g + 1 || neighbour.g == -1) && !neighbour.isWall) {
+            neighbour.g = current.g + 1;
+            neighbour.f = neighbour.g + neighbour.getH();
               
-              cell.parent = current;
+            neighbour.parent = current;
               
-              if(!in(open, cell)) {
-                open.add(cell);
+            if(!in(open, neighbour)) {
+              open.add(neighbour);
                 
-              }
             }
           }
         }
       }
       
-      current = findLowestF();
-    }
+    current = findLowestF();
     
     if(goal == current) {
       Cell reTrace = current;
@@ -88,6 +78,7 @@ class AStar{
         reTrace = reTrace.parent;
       }
     }
+
     if(open.size() == 0) {
       pathFound = false;
       possiblePath = false;

@@ -13,6 +13,8 @@ class Cell{
   float f;
   
   Cell parent;
+  ArrayList<Cell> neighbours = new ArrayList<Cell>();
+  
   boolean activated, scanned;
   
   Cell(float t_trueX, float t_trueY, int t_gridX, int t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, float[] t_spawnPos, float[] t_goalPos){
