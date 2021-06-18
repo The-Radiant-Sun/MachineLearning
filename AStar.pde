@@ -49,7 +49,7 @@ class AStar{
       current.scanned = true;
       
       for(Cell neighbour : current.neighbours){
-          if((in(open, neighbour) || neighbour.g > current.g + 1 || neighbour.g == -1) && !neighbour.isWall) {
+          if((neighbour.g > current.g + 1 || neighbour.g == -1) && !neighbour.isWall) {
             neighbour.g = current.g + 1;
             neighbour.f = neighbour.g + neighbour.getH();
               
