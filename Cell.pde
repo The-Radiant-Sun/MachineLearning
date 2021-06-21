@@ -17,6 +17,8 @@ class Cell{
   
   boolean activated, scanned;
   
+  boolean wallClick, goalClick, spawnClick;
+  
   Cell(float t_trueX, float t_trueY, int t_gridX, int t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, float[] t_spawnPos, float[] t_goalPos){
     cellWidth = t_cellWidth;
     cellHeight = t_cellHeight;
@@ -34,6 +36,10 @@ class Cell{
     isWall = t_isWall;
     
     scanned = false;
+    
+    wallClick = true;
+    goalClick = false;
+    spawnClick = false;
     
     if(isSpawn) {
       g = 0;
@@ -59,9 +65,39 @@ class Cell{
     stroke(v1, v2, v3);
   }
   
+  void changeClick() {
+      goalClick = false;
+      spawnClick = false;
+      wallClick = true;
+  }
+  
+  void changeClick(boolean goal) {
+    if(goal) {
+      isGoal = false;
+      goalClick = true;
+      spawnClick = false;
+      wallClick = false;
+    } else {
+      isSpawn = false;
+      goalClick = false;
+      spawnClick = true;
+      wallClick = false;
+    }
+  }
+  
+  boolean isClicked() {
+    return (mousePressed && (mouseX < trueX + cellWidth && mouseX > trueX - cellWidth) && (mouseY < trueY + cellHeight && mouseY > trueY - cellHeight));
+  }
+  
   void display() {
-    if(mousePressed && (mouseX < trueX + cellWidth && mouseX > trueX - cellWidth) && (mouseY < trueY + cellHeight && mouseY > trueY - cellHeight)) {
-      isWall = !isWall;
+    if(isClicked()) {
+      if(wallClick) {
+        isWall = !isWall;
+      } else if(goalClick) {
+        isGoal = !isGoal;
+      } else if(spawnClick) {
+        isSpawn = !isSpawn;
+      }
       delay(50);
     }
     

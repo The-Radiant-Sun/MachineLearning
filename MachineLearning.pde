@@ -38,23 +38,41 @@ void setup(){
   
 }
 
+boolean pressed(String c) {
+  return (keyPressed && (key == c.toLowerCase().charAt(0) || key == c.toUpperCase().charAt(0)));
+}
 
 void draw(){
-  if(keyPressed) {
-    if(key == 'p' || key == 'P') {
-      startPath = true;
-    }
-    if(key == 'r' || key == 'R') {
-      setup();
-    }
-    if(key == 'c' || key == 'C') {
-      for(int x = 0; x < XNumber; x++) {
-        for(int y = 0; y < YNumber; y++) {
-          map.cells[x][y].isWall = false;
-          map.walls[x][y] = false;
-        }
+  if(pressed("p")) {
+    bestPath = new AStar(map.cells, map.goal, map.spawn);
+    startPath = true;
+  } else if(pressed("r")) {
+    setup();
+  } else if(pressed("c")) {
+    for(int x = 0; x < XNumber; x++) {
+      for(int y = 0; y < YNumber; y++) {
+        map.cells[x][y].isWall = false;
+        map.walls[x][y] = false;
       }
     }
+  } else if(pressed("g")) {
+    for(int x = 0; x < XNumber; x++) {
+      for(int y = 0; y < YNumber; y++) {
+        map.cells[x][y].changeClick(true);
+        }
+      }
+  } else if(pressed("s")) {
+    for(int x = 0; x < XNumber; x++) {
+      for(int y = 0; y < YNumber; y++) {
+        map.cells[x][y].changeClick(false);
+        }
+      }
+  } else if(pressed("w")) {
+    for(int x = 0; x < XNumber; x++) {
+      for(int y = 0; y < YNumber; y++) {
+        map.cells[x][y].changeClick();
+        }
+      }
   }
   
   if(!bestPath.pathFound && startPath && bestPath.possiblePath) {
@@ -79,6 +97,12 @@ void draw(){
     for(int y = 0; y < YNumber; y++) {
       Cell cell = map.cells[x][y];
       cell.display();
+      
+      if(cell.isGoal) {
+        map.goal = cell;
+      } else if (cell.isSpawn) {
+        map.spawn = cell;
+      }
     }
   }
   
