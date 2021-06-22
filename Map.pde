@@ -69,7 +69,7 @@ class Map{
             int newX = n_x + current.gridX;
             int newY = n_y + current.gridY;
             
-            if((newX == 0 && newY == 0) || (newX < 0 || newY < 0 || newX >= cells.length || newY >= cells[cells.length - 1].length)) {
+            if((newX == current.gridX && newY == current.gridY) || (newX < 0 || newY < 0 || newX >= cells.length || newY >= cells[cells.length - 1].length)) {
               continue;
             }
             
