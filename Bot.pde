@@ -21,6 +21,7 @@ class Bot {
     spawn = t_spawn;
   
     travelled = new ArrayList<Cell>();
+    travelled.add(spawn);
     
     size = t_size;
     
@@ -38,7 +39,18 @@ class Bot {
     return speed;
   }
   
+  void invert(PVector pair) {
+    pair.x = -pair.x;
+    pair.y = -pair.y;
+    
+  }
+  
   void Display() {
+    if(travelled.get(travelled.size() - 1).isWall) {
+      invert(velocity);
+      invert(acceleration);
+    }
+    
     position.add(velocity);
     velocity.add(acceleration);
     
