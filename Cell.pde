@@ -17,7 +17,11 @@ class Cell{
   
   boolean activated, scanned;
   
+  boolean occupied;
+  
   boolean wallClick, goalClick, spawnClick;
+  
+  ArrayList<Bot> bots;
   
   Cell(float t_trueX, float t_trueY, int t_gridX, int t_gridY, float t_cellWidth, float t_cellHeight, boolean t_isWall, float[] t_spawnPos, float[] t_goalPos){
     cellWidth = t_cellWidth;
@@ -41,8 +45,14 @@ class Cell{
     goalClick = false;
     spawnClick = false;
     
+    occupied = false;
+    
+    bots = new ArrayList<Bot>();
+    
     if(isSpawn) {
       g = 0;
+      
+      occupied = true;
     }
   }
   
@@ -113,6 +123,17 @@ class Cell{
       changeColour(round(255 * g / 100) + 50, round(255 * h / 100) + 50, round(255 * f / 100) + 50);
     } else {
       changeColour(255, 255, 255);
+    }
+    
+    for(Cell neighbour : neighbours) {
+      if(neighbour.occupied) {
+        for(Bot bot : bots) {
+          if((mouseX < trueX + cellWidth && mouseX > trueX - cellWidth) && (mouseY < trueY + cellHeight && mouseY > trueY - cellHeight)) {
+            occupied = true;
+            bot.travelled.add(this);
+          }
+        }
+      }
     }
     
     hexagon(trueX, trueY, cellWidth * 4 / 3, cellHeight);

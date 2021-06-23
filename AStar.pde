@@ -68,6 +68,9 @@ class AStar{
     if(goal == current) {
       Cell reTrace = current;
       pathFound = true;
+      
+      print("Path found\n");
+      
       while(true){
         path.add(0, reTrace);
         reTrace.activated = true;
@@ -83,7 +86,7 @@ class AStar{
       pathFound = false;
       possiblePath = false;
       
-      print("Path not Found");
+      print("Path not found\n");
     }
   }
 }

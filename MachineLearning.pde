@@ -86,7 +86,7 @@ void draw(){
   
   if(bestPath.pathFound && !spawnedBots) {
     spawnedBots = !spawnedBots;
-    print("Spawned bots");
+    print("Spawned bots\n");
     
     for(int i = 0; i < botNumber; i++) {
       bots.add(new Bot(map.goal, map.spawn, maxSpeed, botSize));
@@ -96,6 +96,7 @@ void draw(){
   for(int x = 0; x < XNumber; x++) {
     for(int y = 0; y < YNumber; y++) {
       Cell cell = map.cells[x][y];
+      cell.bots = bots;
       cell.display();
       
       if(cell.isGoal) {

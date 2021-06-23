@@ -10,14 +10,17 @@ class Bot {
   Cell goal;
   Cell spawn;
   
-  ArrayList<Cell> traveled;
+  ArrayList<Cell> travelled;
+  
+
+  float fitness;
   
   
   Bot(Cell t_goal, Cell t_spawn, float t_maxSpeed, float t_size) {
     goal = t_goal;
     spawn = t_spawn;
   
-    traveled = new ArrayList<Cell>();
+    travelled = new ArrayList<Cell>();
     
     size = t_size;
     
