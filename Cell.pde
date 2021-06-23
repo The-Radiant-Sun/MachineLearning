@@ -1,6 +1,11 @@
 class Cell{
   float trueX, trueY;
   int gridX, gridY;
+  
+  PVector[] points;
+  
+  float[] constant;
+  float[] multiple;
 
   float cellWidth, cellHeight;
   boolean isWall, isGoal, isSpawn;
@@ -33,6 +38,11 @@ class Cell{
     gridX = t_gridX;
     gridY = t_gridY;
     
+    points = new PVector[6];
+    
+    constant = new float[6];
+    multiple = new float[6];
+    
     goalPos = t_goalPos;
 
     isSpawn = (gridX == t_spawnPos[0] && gridY == t_spawnPos[1]);
@@ -54,6 +64,20 @@ class Cell{
       occupied = true;
       g = 0;
     }
+    
+    hexagon(trueX, trueY, cellWidth * 4 / 3, cellHeight);
+    
+    collisionValues();
+  }
+  
+  void hexagon(float x, float y, float w, float h) {
+    beginShape();
+    for (int i = 0; i < 6; i ++) {
+      float a = PI / 180 * 60  * i;
+      points[i] = new PVector(x + cos(a) * w, y + sin(a) * h);
+      vertex(points[i].x, points[i].y);
+    }
+    endShape(CLOSE);
   }
   
   float getH() {
@@ -84,27 +108,55 @@ class Cell{
   void changeClick(boolean goal) {
     if(goal) {
       isGoal = false;
+      occupied = false;
+      
       goalClick = true;
       spawnClick = false;
       wallClick = false;
     } else {
       isSpawn = false;
+      
       goalClick = false;
       spawnClick = true;
       wallClick = false;
     }
   }
   
-  boolean isClicked() {
-    return (mousePressed && (mouseX < trueX + cellWidth && mouseX > trueX - cellWidth) && (mouseY < trueY + cellHeight && mouseY > trueY - cellHeight));
+  void collisionValues() {
+    int i;
+    int j = 5;
+
+    for(i = 0; i < 6; i++) {
+      if(points[j].y == points[i].x) {
+        constant[i] = points[i].x;
+        multiple[i] = 0;
+      } else {
+        constant[i] = points[i].x - (points[i].y * points[j].x) / (points[j].y - points[i].y) + (points[i].y * points[i].x) / (points[j].y - points[i].y);
+        multiple[i] = (points[j].x - points[i].x) / (points[j].y - points[i].y);
+      }
+      j = i;
+    }
+  }
+  
+  boolean collisionWith(PVector point) {
+    int j = 5;
+    boolean  collide = false;
+  
+    for (int i = 0; i < 6; i++) {
+      if ((points[i].y < point.y && points[j].y >= point.y || points[j].y < point.y && points[i].y >= point.y)) {
+        collide ^= (point.y * multiple[i] + constant[i] < point.x); }
+      j = i;
+    }
+    return collide;
   }
   
   void display() {
-    if(isClicked()) {
+    if(collisionWith(new PVector(mouseX, mouseY)) && mousePressed) {
       if(wallClick) {
         isWall = !isWall;
       } else if(goalClick) {
         isGoal = !isGoal;
+        occupied = !occupied;
       } else if(spawnClick) {
         isSpawn = !isSpawn;
       }
@@ -132,7 +184,7 @@ class Cell{
         occupied = false;
         
         for(Bot bot : bots) {
-          if((bot.position.x < trueX + cellWidth && bot.position.x > trueX - cellWidth) && (bot.position.y < trueY + cellHeight && bot.position.y > trueY - cellHeight)) {
+          if(collisionWith(bot.position) && bot.alive) {
             if(!occupied) {
                occupied = true;
             }
@@ -143,17 +195,10 @@ class Cell{
       }
     }
     
-    hexagon(trueX, trueY, cellWidth * 4 / 3, cellHeight);
-  }
-  
-  void hexagon(float x, float y, float w, float h) {
     beginShape();
-    for (float i = 0; i < 6; i ++) {
-      float a = PI / 180 * 60  * i;
-      float sx = x + cos(a) * w;
-      float sy = y + sin(a) * h;
-      vertex(sx, sy);
+    for(PVector point : points) {
+      vertex(point.x, point.y);
     }
-    endShape(CLOSE);
+    endShape();
   }
 }

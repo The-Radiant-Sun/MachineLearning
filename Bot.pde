@@ -12,6 +12,7 @@ class Bot {
   
   ArrayList<Cell> travelled;
   
+  boolean alive;
 
   float fitness;
   
@@ -30,6 +31,8 @@ class Bot {
     acceleration = new PVector(0, 0);
     velocity = PVector.random2D();
     position = new PVector(spawn.trueX, spawn.trueY);
+    
+    alive = true;
   }
   
   float checkSpeed(float speed, float check) {
@@ -39,16 +42,16 @@ class Bot {
     return speed;
   }
   
-  void invert(PVector pair) {
-    pair.x = -pair.x;
-    pair.y = -pair.y;
+  void kill() {
+    alive = false;
     
+    velocity = new PVector(0, 0);
+    acceleration = new PVector(0, 0);
   }
   
   void Display() {
-    if(travelled.get(travelled.size() - 1).isWall) {
-      invert(velocity);
-      invert(acceleration);
+    if(travelled.get(travelled.size() - 1).isWall || !travelled.get(travelled.size() - 1).collisionWith(position)) {
+      kill();
     }
     
     position.add(velocity);
@@ -56,8 +59,14 @@ class Bot {
     
     velocity = new PVector(checkSpeed(velocity.x, maxSpeed), checkSpeed(velocity.y, maxSpeed));
     
-    stroke(0);
-    fill(175);
+    if(alive) {
+      stroke(0);
+      fill(175);
+    } else {
+      stroke(255, 0, 0);
+      fill(175, 0, 0);
+    }
+    
     ellipse(position.x, position.y, size, size);
   }
 }

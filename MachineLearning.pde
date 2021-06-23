@@ -43,6 +43,8 @@ boolean pressed(String c) {
 }
 
 void draw(){
+  background(0);
+
   if(pressed("p")) {
     bestPath = new AStar(map.cells, map.goal, map.spawn);
     startPath = true;
