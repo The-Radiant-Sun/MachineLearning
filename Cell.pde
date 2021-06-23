@@ -17,7 +17,7 @@ class Cell{
   
   boolean activated, scanned;
   
-  boolean occupied;
+  boolean botsSpawned, occupied;
   
   boolean wallClick, goalClick, spawnClick;
   
@@ -45,14 +45,14 @@ class Cell{
     goalClick = false;
     spawnClick = false;
     
+    botsSpawned = false;
     occupied = false;
     
     bots = new ArrayList<Bot>();
     
     if(isSpawn) {
-      g = 0;
-      
       occupied = true;
+      g = 0;
     }
   }
   
@@ -119,6 +119,8 @@ class Cell{
       changeColour(0, 0, 255);
     } else if (activated) {
       changeColour(0, 255, 0);
+    } else if (occupied){
+      changeColour(125, 125, 125);
     } else if(scanned) {
       changeColour(round(255 * g / 100) + 50, round(255 * h / 100) + 50, round(255 * f / 100) + 50);
     } else {
@@ -126,10 +128,15 @@ class Cell{
     }
     
     for(Cell neighbour : neighbours) {
-      if(neighbour.occupied) {
+      if((neighbour.occupied || occupied) && botsSpawned) {
+        occupied = false;
+        
         for(Bot bot : bots) {
-          if((mouseX < trueX + cellWidth && mouseX > trueX - cellWidth) && (mouseY < trueY + cellHeight && mouseY > trueY - cellHeight)) {
-            occupied = true;
+          if((bot.position.x < trueX + cellWidth && bot.position.x > trueX - cellWidth) && (bot.position.y < trueY + cellHeight && bot.position.y > trueY - cellHeight)) {
+            if(!occupied) {
+               occupied = true;
+            }
+            
             bot.travelled.add(this);
           }
         }

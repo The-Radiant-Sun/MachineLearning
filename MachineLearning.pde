@@ -10,7 +10,7 @@ boolean startPath;
 boolean spawnedBots;
 
 float botSize = 10;
-float botNumber = 0;
+float botNumber = 100;
 
 float maxSpeed = 10;
 
@@ -85,11 +85,17 @@ void draw(){
   }
   
   if(bestPath.pathFound && !spawnedBots) {
-    spawnedBots = !spawnedBots;
-    print("Spawned bots\n");
-    
     for(int i = 0; i < botNumber; i++) {
       bots.add(new Bot(map.goal, map.spawn, maxSpeed, botSize));
+    }
+    
+    spawnedBots = true;
+    print("Spawned bots\n");
+    
+    for(int x = 0; x < XNumber; x++) {
+      for(int y = 0; y < YNumber; y++) {
+      map.cells[x][y].botsSpawned = true;
+      }
     }
   }
   
