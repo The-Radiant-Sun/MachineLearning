@@ -73,7 +73,7 @@ class Cell{
   void hexagon(float x, float y, float w, float h) {
     beginShape();
     for (int i = 0; i < 6; i ++) {
-      float a = PI / 180 * 60  * i;
+      float a = PI / 180 * 60 * i;
       points[i] = new PVector(x + cos(a) * w * 0.7, y + sin(a) * h * 0.6);
       vertex(points[i].x, points[i].y);
     }
@@ -123,6 +123,7 @@ class Cell{
   }
   
   void collisionValues() {
+    """Used point detection from within a complex polygon by http://www.alienryderflex.com/polygon/"""
     int i;
     int j = 5;
 
@@ -139,6 +140,8 @@ class Cell{
   }
   
   boolean collisionWith(PVector point) {
+    """Used point detection from within a complex polygon by http://www.alienryderflex.com/polygon/"""
+    
     int j = 5;
     boolean  collide = false;
   
@@ -156,11 +159,11 @@ class Cell{
         isWall = !isWall;
       } else if(goalClick) {
         isGoal = !isGoal;
-        occupied = !occupied;
       } else if(spawnClick) {
         isSpawn = !isSpawn;
+        occupied = !occupied;
       }
-      delay(50);
+      delay(100);
     }
     
     if(isWall) {

@@ -1,8 +1,8 @@
 class AStar{
-  ArrayList<Cell> open = new ArrayList<Cell>();
-  ArrayList<Cell> closed = new ArrayList<Cell>();
+  ArrayList<Cell> open;
+  ArrayList<Cell> closed;
   
-  ArrayList<Cell> path = new ArrayList<Cell>();
+  ArrayList<Cell> path;
   
   boolean pathFound, possiblePath;
   
@@ -12,6 +12,10 @@ class AStar{
   Cell goal;
   
   AStar(Cell[][] cells, Cell t_goal, Cell t_spawn){
+    open = new ArrayList<Cell>();
+    closed = new ArrayList<Cell>();
+    path = new ArrayList<Cell>();
+    
     grid = cells;
     open.add(t_spawn);
     
@@ -20,6 +24,7 @@ class AStar{
     current = open.get(0);
       
     possiblePath = true;
+    pathFound = false;
   }
   
   Cell findLowestF(){

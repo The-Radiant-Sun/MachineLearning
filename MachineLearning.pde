@@ -1,31 +1,48 @@
 import java.util.*;
 
-int XNumber = 50 + 2;
-int YNumber = 50 + 2;
+int XNumber;
+int YNumber;
 
-float obstacleSaturation = 4;
+float obstacleSaturation;
 
 boolean startPath;
 
 boolean spawnedBots;
 
-float botSize = 10;
-float botNumber = 1000;
+float botSize;
+float botNumber;
 
-float maxSpeed = 10;
+float deadBots;
+
+float maxSpeed;
 
 Map map;
 AStar bestPath;
 ArrayList<Bot> bots;
 
+int[] time;
+
 void setup(){
   fullScreen();
+  
+  XNumber = 25 + 2;
+  YNumber = 25 + 2;
+  
+  obstacleSaturation = 4;
+  
   map = new Map(XNumber, YNumber, obstacleSaturation);
   
   bots = new ArrayList<Bot>();
+
+  botSize = 10;
+  botNumber = 1000;
+  
+  maxSpeed = 10;
   
   startPath = false;
   spawnedBots = false;
+  
+  time = new int[2];
   
   for(int x = 0; x < XNumber; x++){
     for(int y = 0; y < YNumber; y++){
@@ -67,6 +84,7 @@ void draw(){
     for(int x = 0; x < XNumber; x++) {
       for(int y = 0; y < YNumber; y++) {
         map.cells[x][y].changeClick(false);
+        map.cells[x][y].occupied = false;
         }
       }
   } else if(pressed("w")) {
@@ -96,9 +114,12 @@ void draw(){
     
     for(int x = 0; x < XNumber; x++) {
       for(int y = 0; y < YNumber; y++) {
-      map.cells[x][y].botsSpawned = true;
+        map.cells[x][y].botsSpawned = true;
       }
     }
+    
+    time[0] = minute();
+    time[1] = second();
   }
   
   for(int x = 0; x < XNumber; x++) {
@@ -115,7 +136,16 @@ void draw(){
     }
   }
   
+  deadBots = 0;
+
   for(Bot bot: bots){
     bot.Display();
+    deadBots += bot.alive ? 0 : 1;
+  }
+  
+  if((deadBots == botNumber || (minute() != time[0] && second() == time[1])) && spawnedBots) {
+    setup();
+    bestPath = new AStar(map.cells, map.goal, map.spawn);
+    startPath = true;
   }
 }
