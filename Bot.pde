@@ -50,7 +50,7 @@ class Bot {
   }
   
   void Display() {
-    if(travelled.get(travelled.size() - 1).isWall || !travelled.get(travelled.size() - 1).collisionWith(position)) {
+    if(travelled.get(travelled.size() - 1).isWall) {
       kill();
     }
     

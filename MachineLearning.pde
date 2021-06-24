@@ -1,7 +1,7 @@
 import java.util.*;
 
-int XNumber = 25;
-int YNumber = 25;
+int XNumber = 50 + 2;
+int YNumber = 50 + 2;
 
 float obstacleSaturation = 4;
 
@@ -10,7 +10,7 @@ boolean startPath;
 boolean spawnedBots;
 
 float botSize = 10;
-float botNumber = 100;
+float botNumber = 1000;
 
 float maxSpeed = 10;
 

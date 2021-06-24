@@ -65,7 +65,7 @@ class Cell{
       g = 0;
     }
     
-    hexagon(trueX, trueY, cellWidth * 4 / 3, cellHeight);
+    hexagon(trueX, trueY, cellWidth, cellHeight);
     
     collisionValues();
   }
@@ -74,7 +74,7 @@ class Cell{
     beginShape();
     for (int i = 0; i < 6; i ++) {
       float a = PI / 180 * 60  * i;
-      points[i] = new PVector(x + cos(a) * w, y + sin(a) * h);
+      points[i] = new PVector(x + cos(a) * w * 0.7, y + sin(a) * h * 0.6);
       vertex(points[i].x, points[i].y);
     }
     endShape(CLOSE);

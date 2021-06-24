@@ -14,8 +14,8 @@ class Map{
     
     cellXNumbers = XNumber;
     cellYNumbers = YNumber;
-    cellWidth = (width / 4 * 3) / cellXNumbers / 4 * 3;
-    cellHeight = (height / 4 * 3) / cellYNumbers / 4 * 3;
+    cellWidth = width / XNumber;
+    cellHeight = height / YNumber;
     
     obstacleChance = 1 / obstacleSaturation;
     
@@ -25,28 +25,28 @@ class Map{
     goalPos = new float[2];
     spawnPos = new float[2];
 
-    goalPos[0] = round(random(cellXNumbers - 1));
-    goalPos[1] = round(random(cellYNumbers - 1));
+    goalPos[0] = round(random(1, cellXNumbers - 2));
+    goalPos[1] = round(random(1, cellYNumbers - 2));
     
-    spawnPos[0] = round(random(cellXNumbers - 1));
-    spawnPos[1] = round(random(cellYNumbers - 1));
+    spawnPos[0] = round(random(1, cellXNumbers - 2));
+    spawnPos[1] = round(random(1, cellYNumbers - 2));
     
     for(int x = 0; x < cellXNumbers; x++){
       for(int y = 0; y < cellYNumbers; y++){
         isGoal = comparePos(x, y, goalPos);
         isSpawn = comparePos(x, y, spawnPos);
         
-        if(random(1) < obstacleChance && !isGoal && !isSpawn) {
+        if(!isGoal && !isSpawn && (random(1) < obstacleChance || (x == 0 || x == cellXNumbers - 1) || (y == 0 || y == cellYNumbers - 1))) {
           isWall = true;
         } else {
           isWall = false;
         }
         
-        float trueX = x * (width / 4 * 3) / cellXNumbers + x * cellWidth / 5 * 2 + width / 32;
-        float trueY = y * (height / 4 * 3) / cellYNumbers + y * cellHeight / 5 * 2 + height / 32;
+        float trueX = x * cellWidth;
+        float trueY = y * cellHeight;
         
         if(x % 2 == 1) {
-          trueY += (height / 4 * 3) * 0.65 / cellYNumbers;
+          trueY += cellHeight / 2;
         }
         
         cells[x][y] = new Cell(trueX, trueY, x, y, cellWidth, cellHeight, isWall, spawnPos, goalPos);
