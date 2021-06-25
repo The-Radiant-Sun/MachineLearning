@@ -1,11 +1,12 @@
 class Bot {
+  Brain brain;
+  int pathStep;
+  
   PVector position;
   PVector velocity;
   PVector acceleration;
   
   float size;
-  
-  float maxSpeed;
   
   Cell goal;
   Cell spawn;
@@ -17,7 +18,10 @@ class Bot {
   float fitness;
   
   
-  Bot(Cell t_goal, Cell t_spawn, float t_maxSpeed, float t_size) {
+  Bot(Cell t_goal, Cell t_spawn, float t_size, int pathLength) {
+    brain = new Brain(pathLength);
+    pathStep = 0;
+    
     goal = t_goal;
     spawn = t_spawn;
   
@@ -26,20 +30,11 @@ class Bot {
     
     size = t_size;
     
-    maxSpeed = t_maxSpeed;
-    
-    acceleration = new PVector(0, 0);
-    velocity = PVector.random2D();
     position = new PVector(spawn.trueX, spawn.trueY);
+    velocity = new PVector(0, 0);
+    acceleration = new PVector(0, 0);
     
     alive = true;
-  }
-  
-  float checkSpeed(float speed, float check) {
-    if(speed > check) {
-      return check;
-    }
-    return speed;
   }
   
   void kill() {
@@ -50,15 +45,21 @@ class Bot {
   }
   
   void Display() {
-    if(travelled.get(travelled.size() - 1).isWall) {
+    if(travelled.get(travelled.size() - 1).isWall || position.x < 1 || position.x > width - 1 || position.y < 1 || position.y > height - 1) {
       kill();
     }
     
     position.add(velocity);
+    
     velocity.add(acceleration);
     
-    velocity = new PVector(checkSpeed(velocity.x, maxSpeed), checkSpeed(velocity.y, maxSpeed));
-    
+    if(pathStep < brain.path.length) {
+      acceleration = brain.path[pathStep];
+      pathStep++;
+    } else {
+      kill();
+    }
+
     if(alive) {
       stroke(0);
       fill(175);

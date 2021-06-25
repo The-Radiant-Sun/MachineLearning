@@ -14,8 +14,6 @@ float botNumber;
 
 float deadBots;
 
-float maxSpeed;
-
 Map map;
 AStar bestPath;
 ArrayList<Bot> bots;
@@ -36,8 +34,6 @@ void setup(){
 
   botSize = 10;
   botNumber = 1000;
-  
-  maxSpeed = 10;
   
   startPath = false;
   spawnedBots = false;
@@ -106,7 +102,7 @@ void draw(){
   
   if(bestPath.pathFound && !spawnedBots) {
     for(int i = 0; i < botNumber; i++) {
-      bots.add(new Bot(map.goal, map.spawn, maxSpeed, botSize));
+      bots.add(new Bot(map.goal, map.spawn, botSize, XNumber * YNumber));
     }
     
     spawnedBots = true;
@@ -139,8 +135,11 @@ void draw(){
   deadBots = 0;
 
   for(Bot bot: bots){
-    bot.Display();
-    deadBots += bot.alive ? 0 : 1;
+    if(bot.alive) {
+      bot.Display();
+    } else {
+      deadBots++;
+    }
   }
   
   if((deadBots == botNumber || (minute() != time[0] && second() == time[1])) && spawnedBots) {

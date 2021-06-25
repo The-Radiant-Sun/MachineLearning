@@ -123,7 +123,7 @@ class Cell{
   }
   
   void collisionValues() {
-    """Used point detection from within a complex polygon by http://www.alienryderflex.com/polygon/"""
+    // Used point detection from within a complex polygon by http://www.alienryderflex.com/polygon/
     int i;
     int j = 5;
 
@@ -132,7 +132,9 @@ class Cell{
         constant[i] = points[i].x;
         multiple[i] = 0;
       } else {
-        constant[i] = points[i].x - (points[i].y * points[j].x) / (points[j].y - points[i].y) + (points[i].y * points[i].x) / (points[j].y - points[i].y);
+        constant[i] = points
+        
+        [i].x - (points[i].y * points[j].x) / (points[j].y - points[i].y) + (points[i].y * points[i].x) / (points[j].y - points[i].y);
         multiple[i] = (points[j].x - points[i].x) / (points[j].y - points[i].y);
       }
       j = i;
@@ -140,7 +142,7 @@ class Cell{
   }
   
   boolean collisionWith(PVector point) {
-    """Used point detection from within a complex polygon by http://www.alienryderflex.com/polygon/"""
+    // Used point detection from within a complex polygon by http://www.alienryderflex.com/polygon/
     
     int j = 5;
     boolean  collide = false;
