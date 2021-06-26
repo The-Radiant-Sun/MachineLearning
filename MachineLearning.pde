@@ -1,40 +1,42 @@
 import java.util.*;
 
-int XNumber;
-int YNumber;
+int XNumber = 25 + 2;
+int YNumber = 25 + 2;
 
-float obstacleSaturation;
+float obstacleSaturation = 4;
 
 boolean startPath;
 
 boolean spawnedBots;
 
-float botSize;
-int botNumber;
+float botSize = 10;
+int botNumber = 100;
 
 Map map;
 AStar bestPath;
-NEAT bots;
 
-int[] time;
+NEAT bots = new NEAT(botSize, botNumber);
+
+int[] time = new int[2];
+
+boolean showBest = false;
+boolean runBest = false;
+
+boolean runThroughSpecies;
+int upToSpecies;
+Bot speciesChampion;
+
+boolean showBrain = false;
+boolean showBestEachGen = false;
+boolean showNothing = false;
 
 void setup(){
   fullScreen();
   
-  XNumber = 25 + 2;
-  YNumber = 25 + 2;
-  
-  obstacleSaturation = 4;
-  
   map = new Map(XNumber, YNumber, obstacleSaturation);
-
-  botSize = 10;
-  botNumber = 1000;
   
   startPath = false;
   spawnedBots = false;
-  
-  time = new int[2];
   
   for(int x = 0; x < XNumber; x++){
     for(int y = 0; y < YNumber; y++){
@@ -45,6 +47,7 @@ void setup(){
   
   bestPath = new AStar(map.cells, map.goal, map.spawn);
   
+  bots.updateValues(map.goal, map.spawn);
 }
 
 boolean pressed(String c) {
@@ -97,7 +100,7 @@ void draw(){
   }
   
   if(bestPath.pathFound && !spawnedBots) {
-    bots = new NEAT(map.goal, map.spawn, botSize, botNumber, XNumber * YNumber);
+    bots.spawn();
     
     spawnedBots = true;
     print("Spawned bots\n");
@@ -135,7 +138,7 @@ void draw(){
   }
   
   if(spawnedBots && (bots.allDead || (minute() != time[0] && second() == time[1]))) {
-    
+    bots.learn();
     
     setup();
     bestPath = new AStar(map.cells, map.goal, map.spawn);

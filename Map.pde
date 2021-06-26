@@ -24,12 +24,20 @@ class Map{
     
     goalPos = new float[2];
     spawnPos = new float[2];
-
-    goalPos[0] = round(random(1, cellXNumbers - 2));
-    goalPos[1] = round(random(1, cellYNumbers - 2));
     
-    spawnPos[0] = round(random(1, cellXNumbers - 2));
-    spawnPos[1] = round(random(1, cellYNumbers - 2));
+    goalPos[0] = 0;
+    goalPos[1] = 0;
+    
+    spawnPos[0] = 0;
+    spawnPos[1] = 0;
+    
+    while(abs(goalPos[0] - spawnPos[0]) < 10 || abs(goalPos[1] - spawnPos[1]) < 10) {
+      goalPos[0] = round(random(1, cellXNumbers - 2));
+      goalPos[1] = round(random(1, cellYNumbers - 2));
+      
+      spawnPos[0] = round(random(1, cellXNumbers - 2));
+      spawnPos[1] = round(random(1, cellYNumbers - 2));
+    }
     
     for(int x = 0; x < cellXNumbers; x++){
       for(int y = 0; y < cellYNumbers; y++){
