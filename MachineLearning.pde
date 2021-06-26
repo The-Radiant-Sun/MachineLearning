@@ -10,13 +10,11 @@ boolean startPath;
 boolean spawnedBots;
 
 float botSize;
-float botNumber;
-
-float deadBots;
+int botNumber;
 
 Map map;
 AStar bestPath;
-ArrayList<Bot> bots;
+NEAT bots;
 
 int[] time;
 
@@ -29,8 +27,6 @@ void setup(){
   obstacleSaturation = 4;
   
   map = new Map(XNumber, YNumber, obstacleSaturation);
-  
-  bots = new ArrayList<Bot>();
 
   botSize = 10;
   botNumber = 1000;
@@ -101,9 +97,7 @@ void draw(){
   }
   
   if(bestPath.pathFound && !spawnedBots) {
-    for(int i = 0; i < botNumber; i++) {
-      bots.add(new Bot(map.goal, map.spawn, botSize, XNumber * YNumber));
-    }
+    bots = new NEAT(map.goal, map.spawn, botSize, botNumber, XNumber * YNumber);
     
     spawnedBots = true;
     print("Spawned bots\n");
@@ -121,7 +115,11 @@ void draw(){
   for(int x = 0; x < XNumber; x++) {
     for(int y = 0; y < YNumber; y++) {
       Cell cell = map.cells[x][y];
-      cell.bots = bots;
+      
+      if(spawnedBots) {
+        cell.bots = bots.bots;
+      }
+      
       cell.display();
       
       if(cell.isGoal) {
@@ -132,17 +130,13 @@ void draw(){
     }
   }
   
-  deadBots = 0;
-
-  for(Bot bot: bots){
-    if(bot.alive) {
-      bot.Display();
-    } else {
-      deadBots++;
-    }
+  if(spawnedBots) {
+    bots.display();
   }
   
-  if((deadBots == botNumber || (minute() != time[0] && second() == time[1])) && spawnedBots) {
+  if(spawnedBots && (bots.allDead || (minute() != time[0] && second() == time[1]))) {
+    
+    
     setup();
     bestPath = new AStar(map.cells, map.goal, map.spawn);
     startPath = true;

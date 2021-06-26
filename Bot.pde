@@ -45,7 +45,9 @@ class Bot {
   }
   
   void Display() {
-    if(travelled.get(travelled.size() - 1).isWall || position.x < 1 || position.x > width - 1 || position.y < 1 || position.y > height - 1) {
+    Cell lastTravelled = travelled.get(travelled.size() - 1);
+    
+    if(lastTravelled.isWall || position.x < 1 || position.x > width - 1 || position.y < 1 || position.y > height - 1) {
       kill();
     }
     
@@ -57,6 +59,13 @@ class Bot {
       acceleration = brain.path[pathStep];
       pathStep++;
     } else {
+      kill();
+    }
+    
+    fitness = 1 / pow(2, lastTravelled.getH());
+    
+    if(lastTravelled.isGoal) {
+      
       kill();
     }
 
