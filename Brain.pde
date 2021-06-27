@@ -9,6 +9,8 @@ class Brain {
   int nextNode = 0;
   int biasNode;
   
+  ArrayList<Node> network = new ArrayList<Node>();//a list of the nodes in the order that they need to be considered in the NN
+  
   Brain() {
      //set input number and output number
     inputs = 2;
@@ -60,9 +62,10 @@ class Brain {
   //feeding in input values into the NN and returning output array
   float[] feedForward(float[] inputValues) {
     //set the outputs of the input nodes
-    for (int i =0; i < inputs; i++) {
+    for (int i = 0; i < inputs; i++) {
       nodes.get(i).outputValue = inputValues[i];
     }
+    
     nodes.get(biasNode).outputValue = 1;//output of bias is 1
 
     for (int i = 0; i< network.size(); i++) {//for each node in the network engage it(see node class for what this does)

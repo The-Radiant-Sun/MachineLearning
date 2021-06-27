@@ -96,7 +96,7 @@ class Species {
         }
       }
       temp.add(bots.get(maxIndex));
-      players.remove(maxIndex);
+      bots.remove(maxIndex);
       i--;
     }
 
@@ -108,9 +108,9 @@ class Species {
     //if new best player
     if (bots.get(0).fitness > bestFitness) {
       staleness = 0;
-      bestFitness = players.get(0).fitness;
-      rep = players.get(0).brain.clone();
-      champ = players.get(0).cloneForReplay();
+      bestFitness = bots.get(0).fitness;
+      rep = bots.get(0).brain.clone();
+      bestBot = bots.get(0).cloneForReplay();
     } else {//if no new best player
       staleness ++;
     }
@@ -118,14 +118,14 @@ class Species {
   
   void setAverage() {
     float sum = 0;
-    for (int i = 0; i < players.size(); i ++) {
-      sum += players.get(i).fitness;
+    for (int i = 0; i < bots.size(); i ++) {
+      sum += bots.get(i).fitness;
     }
-    averageFitness = sum/players.size();
+    averageFitness = sum / bots.size();
   }
   
   //gets baby from the players in this species
-  Bot giveMeBaby(ArrayList<ConnectionHistory> innovationHistory) {
+  Bot createChild(ArrayList<ConnectionHistory> innovationHistory) {
     Bot child;
     if (random(1) < 0.25) {//25% of the time there is no crossover and the child is simply a clone of a random(ish) player
       child =  selectBot().clone();
@@ -148,7 +148,7 @@ class Species {
   }
   
   //selects a player based on it fitness
-   selectBot() {
+   Bot selectBot() {
     float fitnessSum = 0;
     for(Bot bot : bots) {
       fitnessSum += bot.fitness;

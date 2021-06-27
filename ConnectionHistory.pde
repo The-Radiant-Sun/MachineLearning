@@ -16,12 +16,12 @@ class ConnectionHistory {
   }
   
   //returns whether the genome matches the original genome and the connection is between the same nodes
-  boolean matches(Genome genome, Node from, Node to) {
-    if (genome.genes.size() == innovationNumbers.size()) { //if the number of connections are different then the genoemes aren't the same
+  boolean matches(Brain brain, Node from, Node to) {
+    if (brain.genes.size() == innovationNumbers.size()) { //if the number of connections are different then the genoemes aren't the same
       if (from.number == fromNode && to.number == toNode) {
         //next check if all the innovation numbers match from the genome
-        for (int i = 0; i< genome.genes.size(); i++) {
-          if (!innovationNumbers.contains(genome.genes.get(i).innovationNo)) {
+        for (int i = 0; i < brain.genes.size(); i++) {
+          if (!innovationNumbers.contains(brain.genes.get(i).innovationNo)) {
             return false;
           }
         }

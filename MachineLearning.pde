@@ -10,12 +10,14 @@ boolean startPath;
 boolean spawnedBots;
 
 float botSize = 10;
-int botNumber = 100;
+int botNumber = 1000;
 
 Map map;
 AStar bestPath;
 
 NEAT bots = new NEAT(botSize, botNumber);
+
+int nextConnectionNo = 1000;
 
 int[] time = new int[2];
 
@@ -66,7 +68,6 @@ void draw(){
     for(int x = 0; x < XNumber; x++) {
       for(int y = 0; y < YNumber; y++) {
         map.cells[x][y].isWall = false;
-        map.walls[x][y] = false;
       }
     }
   } else if(pressed("g")) {
@@ -133,15 +134,13 @@ void draw(){
     }
   }
   
-  if(spawnedBots) {
-    bots.display();
-  }
-  
   if(spawnedBots && (bots.allDead || (minute() != time[0] && second() == time[1]))) {
-    bots.learn();
-    
     setup();
     bestPath = new AStar(map.cells, map.goal, map.spawn);
     startPath = true;
+  }
+  
+  if(spawnedBots) {
+    bots.display();
   }
 }
