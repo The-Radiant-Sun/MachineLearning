@@ -13,14 +13,14 @@ class Brain {
   
   Brain() {
      //set input number and output number
-    inputs = 2;
-    outputs = 2;
+    inputs = 10;
+    outputs = 4;
 
     //create input nodes
     for (int i = 0; i<inputs; i++) {
       nodes.add(new Node(i));
       nextNode ++;
-      nodes.get(i).layer =0;
+      nodes.get(i).layer = 0;
     }
 
     //create output nodes
@@ -312,7 +312,7 @@ class Brain {
 
     //clone all the connections so that they connect the childs new nodes
 
-    for ( int i =0; i<childGenes.size(); i++) {
+    for ( int i = 0; i < childGenes.size(); i++) {
       child.genes.add(childGenes.get(i).clone(child.getNode(childGenes.get(i).fromNode.number), child.getNode(childGenes.get(i).toNode.number)));
       child.genes.get(i).enabled = isEnabled.get(i);
     }
@@ -358,7 +358,6 @@ class Brain {
   
   //returns a copy of this genome
   Brain clone() {
-
     Brain clone = new Brain(inputs, outputs, true);
 
     for (int i = 0; i < nodes.size(); i++) {//copy nodes

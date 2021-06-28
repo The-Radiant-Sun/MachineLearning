@@ -147,8 +147,8 @@ class NEAT {
   
   //calculates the fitness of all of the players 
   void calculateFitness() {
-    for (int i = 1; i<bots.size(); i++) {
-      bots.get(i).calculateFitness();
+    for (Bot bot : bots) {
+      bot.calculateFitness();
     }
   }
   

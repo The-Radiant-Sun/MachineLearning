@@ -1,4 +1,5 @@
 import java.util.*;
+PWindow win;
 
 int XNumber = 25 + 2;
 int YNumber = 25 + 2;
@@ -10,7 +11,7 @@ boolean startPath;
 boolean spawnedBots;
 
 float botSize = 10;
-int botNumber = 1000;
+int botNumber = 5000;
 
 Map map;
 AStar bestPath;
@@ -32,8 +33,12 @@ boolean showBrain = false;
 boolean showBestEachGen = false;
 boolean showNothing = false;
 
-void setup(){
+public void settings() {
   fullScreen();
+  win = new PWindow(bots);
+}
+
+void setup(){
   
   map = new Map(XNumber, YNumber, obstacleSaturation);
   

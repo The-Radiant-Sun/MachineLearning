@@ -1,8 +1,8 @@
 class Bot {
   Brain brain;
   
-  int brainInputs = 3;
-  int brainOutputs = 2;
+  int brainInputs = 10;
+  int brainOutputs = 4;
   
   float[] decision = new float[2];
   
@@ -117,7 +117,7 @@ class Bot {
   }
   
   void calculateFitness() {
-    fitness = pow(2, lastTravelled.getH()) * lifespan;
+    fitness = 1 / (pow(2, lastTravelled.getH()) * (lifespan + 1)); 
   }
   
   void Display() {
@@ -132,12 +132,12 @@ class Bot {
     position.add(velocity);
     velocity.add(acceleration);
     
-    acceleration.x = decision[0];
-    acceleration.y = decision[1];
+    acceleration.x = decision[0] - decision[1];
+    acceleration.y = decision[2] - decision[3];
     
-    fitness = 1 / pow(2, lastTravelled.getH() + 1);
+    score = int(-lastTravelled.getH());
     
-    if(lastTravelled.isGoal) {
+    if(lastTravelled.isGoal || (abs(decision[0] - decision[1]) <= 0.1 && abs(decision[2] - decision[3]) <= 0.1)) {
       kill();
     }
 
