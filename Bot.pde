@@ -52,18 +52,15 @@ class Bot {
   //gets the output of the brain then converts them to actions
   void think() {
     float max = 0;
-    int maxIndex = 0;
+    int maxIndex = 8;
     
-    int v = 4;
-    int vMax = 10;
+    int v = 2;
+    int vMax = 8;
     
-    float[] vision = new float[10];
+    float[] vision = new float[8];
     
-    vision[0] = position.x;
-    vision[1] = position.y;
-    
-    vision[2] = goal.trueX;
-    vision[3] = goal.trueY;
+    vision[0] = abs(position.x - goal.trueX);
+    vision[1] = abs(position.y - goal.trueY);
     
     for(Cell neighbour : lastTravelled.neighbours) {
       vision[v] = neighbour.isWall ? 1 : 0;

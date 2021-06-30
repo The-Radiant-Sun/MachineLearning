@@ -12,7 +12,7 @@ class Node {
   
   //the node sends its output to the inputs of the nodes its connected to
   void engage() {
-    if (layer!=0) {//no sigmoid for the inputs and bias
+    if (layer != 0) {//no sigmoid for the inputs and bias
       outputValue = sigmoid(inputSum);
     }
 

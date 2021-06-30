@@ -16,8 +16,19 @@ class PWindow extends PApplet {
     int h = height;
     
     if(bots.bots != null) {
-      botBrain = bots.bots.get(0).brain;
-    
+      int v = 0;
+      Bot bot = bots.bots.get(v);
+      while(!bots.bots.get(v).alive) {
+        v++;
+        if(v == bots.bots.size()) {
+          break;
+        }
+        
+        bot = bots.bots.get(v);
+      }
+      
+      botBrain = bot.brain;
+      
       //i know its ugly but it works (and is not that important) so I'm not going to mess with it
       ArrayList<ArrayList<Node>> allNodes = new ArrayList<ArrayList<Node>>();
       ArrayList<PVector> nodePoses = new ArrayList<PVector>();
@@ -40,7 +51,7 @@ class PWindow extends PApplet {
       //for each layer add the position of the node on the screen to the node posses arraylist
       for (int i = 0; i < botBrain.layers; i++) {
         fill(255, 0, 0);
-        float x = startX + (float)((i + 1) * w)/(float)(botBrain.layers+1.0);
+        float x = startX + (float)((i + 1) * w) / (float)(botBrain.layers + 1.0);
         for (int j = 0; j < allNodes.get(i).size(); j++) {//for the position in the layer
           float y = startY + ((float)(j + 1.0) * h) / (float)(allNodes.get(i).size() + 1.0);
           nodePoses.add(new PVector(x, y));
@@ -88,11 +99,8 @@ class PWindow extends PApplet {
     fullScreen();
   }
   
-  void setup() {
-    background(255);
-  }
-  
   void draw() {
+    background(255);
     drawBrain();
   }
 }

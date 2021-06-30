@@ -13,11 +13,11 @@ class Brain {
   
   Brain() {
      //set input number and output number
-    inputs = 10;
+    inputs = 8;
     outputs = 4;
 
     //create input nodes
-    for (int i = 0; i<inputs; i++) {
+    for (int i = 0; i < inputs; i++) {
       nodes.add(new Node(i));
       nextNode ++;
       nodes.get(i).layer = 0;
@@ -389,7 +389,7 @@ class Brain {
 
 
     //split the nodes into layers
-    for (int i = 0; i< layers; i++) {
+    for (int i = 0; i < layers; i++) {
       ArrayList<Node> temp = new ArrayList<Node>();
       for (int j = 0; j< nodes.size(); j++) {//for each node 
         if (nodes.get(j).layer == i ) {//check if it is in this layer
@@ -402,8 +402,8 @@ class Brain {
     //for each layer add the position of the node on the screen to the node posses arraylist
     for (int i = 0; i < layers; i++) {
       fill(255, 0, 0);
-      float x = startX + (float)((i+1)*w)/(float)(layers+1.0);
-      for (int j = 0; j< allNodes.get(i).size(); j++) {//for the position in the layer
+      float x = startX + (float)((i + 1) * w) / (float)(layers + 1.0);
+      for (int j = 0; j < allNodes.get(i).size(); j++) {//for the position in the layer
         float y = startY + ((float)(j + 1.0) * h)/(float)(allNodes.get(i).size() + 1.0);
         nodePoses.add(new PVector(x, y));
         nodeNumbers.add(allNodes.get(i).get(j).number);

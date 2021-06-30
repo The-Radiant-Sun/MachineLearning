@@ -11,7 +11,7 @@ boolean startPath;
 boolean spawnedBots;
 
 float botSize = 10;
-int botNumber = 5000;
+int botNumber = 1000;
 
 Map map;
 AStar bestPath;
@@ -63,13 +63,13 @@ boolean pressed(String c) {
 
 void draw(){
   background(0);
-
+  print("1\n");
   if(pressed("p")) {
     bestPath = new AStar(map.cells, map.goal, map.spawn);
     startPath = true;
   } else if(pressed("r")) {
     setup();
-  } else if(pressed("c")) {
+  } else if(pressed("c") || bots.generation < 500) {
     for(int x = 0; x < XNumber; x++) {
       for(int y = 0; y < YNumber; y++) {
         map.cells[x][y].isWall = false;
@@ -95,18 +95,22 @@ void draw(){
         }
       }
   }
+  print("2\n");
   
   if(!bestPath.pathFound && startPath && bestPath.possiblePath) {
     bestPath.pathfind();
   }
+  print("3\n");
   
   if(!bestPath.possiblePath) {
     setup();
     startPath = true;
   }
+  print("4\n");
   
   if(bestPath.pathFound && !spawnedBots) {
     bots.spawn();
+  print("5\n");
     
     spawnedBots = true;
     print("Spawned bots\n");
@@ -116,10 +120,12 @@ void draw(){
         map.cells[x][y].botsSpawned = true;
       }
     }
+  print("6\n");
     
     time[0] = minute();
     time[1] = second();
   }
+  print("7\n");
   
   for(int x = 0; x < XNumber; x++) {
     for(int y = 0; y < YNumber; y++) {
@@ -138,14 +144,17 @@ void draw(){
       }
     }
   }
+  print("8\n");
   
   if(spawnedBots && (bots.allDead || (minute() != time[0] && second() == time[1]))) {
     setup();
     bestPath = new AStar(map.cells, map.goal, map.spawn);
     startPath = true;
   }
+  print("9\n");
   
   if(spawnedBots) {
     bots.display();
   }
+  print("10\n");
 }
