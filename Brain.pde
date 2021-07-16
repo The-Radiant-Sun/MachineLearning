@@ -13,8 +13,8 @@ class Brain {
   
   Brain() {
      //set input number and output number
-    inputs = 8;
-    outputs = 4;
+    inputs = 3;
+    outputs = 2;
 
     //create input nodes
     for (int i = 0; i < inputs; i++) {

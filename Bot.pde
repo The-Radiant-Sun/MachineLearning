@@ -1,10 +1,11 @@
 class Bot {
   Brain brain;
   
-  int brainInputs = 10;
-  int brainOutputs = 4;
+  //int brainInputs = 9;
+  int brainInputs = 3;
+  int brainOutputs = 2;
   
-  float[] decision = new float[2];
+  float[] decision = new float[brainOutputs];
   
   int lifespan = 0;
   int score = 0;
@@ -52,16 +53,21 @@ class Bot {
   //gets the output of the brain then converts them to actions
   void think() {
     float max = 0;
-    int maxIndex = 8;
+    int maxIndex = brainInputs;
     
-    int v = 2;
-    int vMax = 8;
+    int v = 3;
+    int vMax = brainInputs;
     
-    float[] vision = new float[8];
+    float[] vision = new float[vMax];
     
-    vision[0] = abs(position.x - goal.trueX);
-    vision[1] = abs(position.y - goal.trueY);
+    vision[0] = lastTravelled.getH();
     
+    PVector toGoal = new PVector(goal.trueX, goal.trueY).sub(position);
+    
+    vision[1] = toGoal.x;
+    vision[2] = toGoal.y;
+    
+    /*
     for(Cell neighbour : lastTravelled.neighbours) {
       vision[v] = neighbour.isWall ? 1 : 0;
       v++;
@@ -71,6 +77,7 @@ class Bot {
         vision[v] = 1;
       }
     }
+    */
     
     //get the output of the neural network
     decision = brain.feedForward(vision);
@@ -114,7 +121,7 @@ class Bot {
   }
   
   void calculateFitness() {
-    fitness = 1 / (pow(2, lastTravelled.getH()) * (lifespan + 1)); 
+    fitness = 1 / pow(2, lastTravelled.getH()); 
   }
   
   void Display() {
@@ -122,19 +129,19 @@ class Bot {
     
     think();
     
-    if(lastTravelled.isWall || position.x < 1 || position.x > width - 1 || position.y < 1 || position.y > height - 1) {
+    if(lastTravelled.isWall || !lastTravelled.collisionWith(position)) {
       kill();
     }
     
     position.add(velocity);
     velocity.add(acceleration);
     
-    acceleration.x = decision[0] - decision[1];
-    acceleration.y = decision[2] - decision[3];
+    acceleration.x = decision[0] * cos(decision[1] * 2 * PI);
+    acceleration.y = decision[0] * sin(decision[1] * 2 * PI);
     
     score = int(-lastTravelled.getH());
     
-    if(lastTravelled.isGoal || (abs(decision[0] - decision[1]) <= 0.1 && abs(decision[2] - decision[3]) <= 0.1)) {
+    if(lastTravelled.isGoal || decision[0] < 0.1) {
       kill();
     }
 
