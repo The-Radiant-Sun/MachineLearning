@@ -17,7 +17,7 @@ class Species {
     //since it is the only one in the species it is by default the best
     bestFitness = b.fitness; 
     rep = b.brain.clone();
-    bestBot = b.cloneForReplay();
+    bestBot = b.clone();
   }
   
   //returns whether the parameter genome is in this species
@@ -110,7 +110,7 @@ class Species {
       staleness = 0;
       bestFitness = bots.get(0).fitness;
       rep = bots.get(0).brain.clone();
-      bestBot = bots.get(0).cloneForReplay();
+      bestBot = bots.get(0).clone();
     } else {//if no new best player
       staleness ++;
     }

@@ -69,11 +69,11 @@ class NEAT {
     //if best this gen is better than the global best score then set the global best as the best this gen
 
     if (tempBest.score > bestScore) {
-      botGen.add(tempBest.cloneForReplay());
+      botGen.add(tempBest.clone());
       println("old best:", bestScore);
       println("new best:", tempBest.score);
       bestScore = tempBest.score;
-      bestBot = tempBest.cloneForReplay();
+      bestBot = tempBest.clone();
     }
   }
   
@@ -106,7 +106,7 @@ class NEAT {
         print("Bot " + i, "fitness: " +  species.get(j).bots.get(i).fitness, "score " + species.get(j).bots.get(i).score, ' ');
       }
       println();
-      children.add(species.get(j).bestBot.cloneForReplay());//add champion without any mutation
+      children.add(species.get(j).bestBot.clone());//add champion without any mutation
 
       int NoOfChildren = floor(species.get(j).averageFitness/averageSum * bots.size()) -1;//the number of children this species is allowed, note -1 is because the champ is already added
       for (int i = 0; i< NoOfChildren; i++) {//get the calculated amount of children from this species

@@ -60,7 +60,7 @@ class Map{
         if(isGoal) {
           goal = cells[x][y];
         } if(isSpawn) {
-                 spawn = cells[x][y];
+          spawn = cells[x][y];
         }
       }
     }

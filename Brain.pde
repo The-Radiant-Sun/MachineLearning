@@ -1,43 +1,44 @@
+/* Recieves input from the bot, makes decisions based on that input */
 class Brain {
-  ArrayList<ConnectionGene> genes = new  ArrayList<ConnectionGene>();//a list of connections between nodes which represent the NN
-  ArrayList<Node> nodes = new ArrayList<Node>();//list of nodes
+  ArrayList<ConnectionGene> genes = new  ArrayList<ConnectionGene>(); //A list of connections between the nodes
+  ArrayList<Node> nodes = new ArrayList<Node>(); //A list of the nodes
   
   int inputs;
   int outputs;
   
-  int layers = 2;
-  int nextNode = 0;
+  int layers = 2; //Starting layers
+  int nextNode = 0; //Starting node number
   int biasNode;
   
-  ArrayList<Node> network = new ArrayList<Node>();//a list of the nodes in the order that they need to be considered in the NN
+  ArrayList<Node> network = new ArrayList<Node>(); //A list of the nodes in the order that they will be iterated through
   
+  /* Creates the nodes of the neural network */
   Brain() {
-     //set input number and output number
-    inputs = 3;
+    inputs = 3; //Set beginning values for input and output
     outputs = 2;
 
-    //create input nodes
+    //Create the input nodes
     for (int i = 0; i < inputs; i++) {
       nodes.add(new Node(i));
       nextNode ++;
       nodes.get(i).layer = 0;
     }
-
-    //create output nodes
+    
+    //Create the output nodes
     for (int i = 0; i < outputs; i++) {
       nodes.add(new Node(i + inputs));
       nodes.get(i+inputs).layer = 1;
       nextNode++;
     }
 
-    nodes.add(new Node(nextNode));//bias node
+     //Add the bias node
+    nodes.add(new Node(nextNode));
     biasNode = nextNode; 
     nextNode++;
     nodes.get(biasNode).layer = 0;
   }
   
-  //returns the node with a matching number
-  //sometimes the nodes will not be in order
+  /* Returns matching node */
   Node getNode(int nodeNumber) {
     for (int i = 0; i < nodes.size(); i++) {
       if (nodes.get(i).number == nodeNumber) {
@@ -47,52 +48,56 @@ class Brain {
     return null;
   }
   
-  //adds the conenctions going out of a node to that node so that it can acess the next node during feeding forward
+  /* Creates the network out of the nodes */
   void connectNodes() {
-
-    for (int i = 0; i< nodes.size(); i++) {//clear the connections
+    //Wipe the current connections
+    for (int i = 0; i< nodes.size(); i++) {
       nodes.get(i).outputConnections.clear();
     }
 
-    for (int i = 0; i < genes.size(); i++) {//for each connectionGene 
-      genes.get(i).fromNode.outputConnections.add(genes.get(i));//add it to node
+    //Reconnect the nodes
+    for (int i = 0; i < genes.size(); i++) {
+      genes.get(i).fromNode.outputConnections.add(genes.get(i));
     }
   }
   
-  //feeding in input values into the NN and returning output array
+  //Feed input values into the network and returning the output
   float[] feedForward(float[] inputValues) {
-    //set the outputs of the input nodes
+    //Set outputs for the input nodes
     for (int i = 0; i < inputs; i++) {
       nodes.get(i).outputValue = inputValues[i];
     }
     
-    nodes.get(biasNode).outputValue = 1;//output of bias is 1
+    nodes.get(biasNode).outputValue = 1;
 
-    for (int i = 0; i< network.size(); i++) {//for each node in the network engage it(see node class for what this does)
+    //For each node in the network send its output to connected nodes
+    for (int i = 0; i < network.size(); i++) {
       network.get(i).engage();
     }
 
-    //the outputs are nodes[inputs] to nodes [inputs+outputs-1]
-    float[] outs = new float[outputs];
+    //Save the outputs of forward nodes
+    float[] output = new float[outputs];
     for (int i = 0; i < outputs; i++) {
-      outs[i] = nodes.get(inputs + i).outputValue;
+      output[i] = nodes.get(inputs + i).outputValue;
     }
 
-    for (int i = 0; i < nodes.size(); i++) {//reset all the nodes for the next feed forward
+    //Reset all nodes for the next thought
+    for (int i = 0; i < nodes.size(); i++) {
       nodes.get(i).inputSum = 0;
     }
 
-    return outs;
+    return output;
   }
   
-  //sets up the NN as a list of nodes in order to be engaged 
+  /* sets up the NN as a list of nodes in order to be engaged */
   void generateNetwork() {
+    //Base code framework from Code Bullet
     connectNodes();
     network = new ArrayList<Node>();
     //for each layer add the node in that layer, since layers cannot connect to themselves there is no need to order the nodes within a layer
 
-    for (int l = 0; l< layers; l++) {//for each layer
-      for (int i = 0; i< nodes.size(); i++) {//for each node
+    for (int l = 0; l < layers; l++) {//for each layer
+      for (int i = 0; i < nodes.size(); i++) {//for each node
         if (nodes.get(i).layer == l) {//if that node is in that layer
           network.add(nodes.get(i));
         }
@@ -105,6 +110,7 @@ class Brain {
   //1 between the input node of the disabled connection and the new node
   //and the other between the new node and the output of the disabled connection
   void addNode(ArrayList<ConnectionHistory> innovationHistory) {
+    //Base code framework from Code Bullet
     //pick a random connection to create a node between
     if (genes.size() ==0) {
       addConnection(innovationHistory); 
@@ -151,6 +157,7 @@ class Brain {
   
   //adds a connection between 2 nodes which aren't currently connected
   void addConnection(ArrayList<ConnectionHistory> innovationHistory) {
+    //Base code by Code Bullet
     //cannot add a connection to a fully connected network
     if (fullyConnected()) {
       println("connection failed");
@@ -182,6 +189,7 @@ class Brain {
   }
   
   boolean ifConnected (int r1, int r2) {
+    //Base code by Code Bullet
     if (nodes.get(r1).layer == nodes.get(r2).layer) return true; // if the nodes are in the same layer 
     if (nodes.get(r1).isConnectedTo(nodes.get(r2))) return true; //if the nodes are already connected
     return false;
@@ -191,6 +199,7 @@ class Brain {
   //if this mutation has never been seen before then it will be given a new unique innovation number
   //if this mutation matches a previous mutation then it will be given the same innovation number as the previous one
   int getInnovationNumber(ArrayList<ConnectionHistory> innovationHistory, Node from, Node to) {
+    //Base code by Code Bullet
     boolean isNew = true;
     int connectionInnovationNumber = nextConnectionNo;
     for (int i = 0; i < innovationHistory.size(); i++) {//for each previous mutation
@@ -216,6 +225,7 @@ class Brain {
   
   //returns whether the network is fully connected or not
   boolean fullyConnected() {
+    //Base code by Code Bullet
     int maxConnections = 0;
     int[] nodesInLayers = new int[layers];//array which stored the amount of nodes in each layer
 
@@ -243,6 +253,7 @@ class Brain {
   
   //mutates the genome
   void mutate(ArrayList<ConnectionHistory> innovationHistory) {
+    //Base code by Code Bullet
     if (genes.size() ==0) {
       addConnection(innovationHistory);
     }
@@ -268,6 +279,7 @@ class Brain {
   
   //called when this Genome is better that the other parent
   Brain crossover(Brain parent2) {
+    //Base code by Code Bullet
     Brain child = new Brain(inputs, outputs, true);
     child.genes.clear();
     child.nodes.clear();
@@ -289,7 +301,7 @@ class Brain {
           }
         }
         float rand = random(1);
-        if (rand<0.5) {
+        if (rand < 0.5) {
           childGenes.add(genes.get(i));
 
           //get gene from this fucker
@@ -330,6 +342,7 @@ class Brain {
   
   //returns whether or not there is a gene matching the input innovation number  in the input genome
   int matchingGene(Brain parent2, int innovationNumber) {
+    //Base code by Code Bullet
     for (int i =0; i < parent2.genes.size(); i++) {
       if (parent2.genes.get(i).innovationNo == innovationNumber) {
         return i;
@@ -380,7 +393,7 @@ class Brain {
   
   //draw the genome on the screen
   void drawGenome(int startX, int startY, int w, int h) {
-    //i know its ugly but it works (and is not that important) so I'm not going to mess with it
+    //Code by Code Bullet
     ArrayList<ArrayList<Node>> allNodes = new ArrayList<ArrayList<Node>>();
     ArrayList<PVector> nodePoses = new ArrayList<PVector>();
     ArrayList<Integer> nodeNumbers= new ArrayList<Integer>();
