@@ -1,4 +1,4 @@
-class Map{
+ class Map{
   int cellXNumbers, cellYNumbers;
   float cellWidth, cellHeight, obstacleChance;
   
@@ -8,6 +8,7 @@ class Map{
   Cell spawn;
   
   Map(int XNumber, int YNumber, float obstacleSaturation){
+    /* Initializer */
     boolean isWall, isGoal, isSpawn;
     float[] goalPos, spawnPos;
     
@@ -29,6 +30,7 @@ class Map{
     spawnPos[0] = 0;
     spawnPos[1] = 0;
     
+    /* While the goal and the spawn are within 10 units of each other, find new locations */
     while(abs(goalPos[0] - spawnPos[0]) < 10 || abs(goalPos[1] - spawnPos[1]) < 10) {
       goalPos[0] = round(random(1, cellXNumbers - 2));
       goalPos[1] = round(random(1, cellYNumbers - 2));
@@ -37,34 +39,36 @@ class Map{
       spawnPos[1] = round(random(1, cellYNumbers - 2));
     }
     
+    /* Assign values for all cells within grid size */
     for(int x = 0; x < cellXNumbers; x++){
       for(int y = 0; y < cellYNumbers; y++){
         isGoal = comparePos(x, y, goalPos);
         isSpawn = comparePos(x, y, spawnPos);
         
         if(!isGoal && !isSpawn && (random(1) < obstacleChance || (x == 0 || x == cellXNumbers - 1) || (y == 0 || y == cellYNumbers - 1))) {
-          isWall = true;
+          isWall = true; //Only allow cell to be a wall if it is not the goal or spawn
         } else {
           isWall = false;
         }
         
-        float trueX = x * cellWidth;
+        float trueX = x * cellWidth; //Recording the actual coordinates
         float trueY = y * cellHeight;
         
         if(x % 2 == 1) {
           trueY += cellHeight / 2;
         }
         
-        cells[x][y] = new Cell(trueX, trueY, x, y, cellWidth, cellHeight, isWall, spawnPos, goalPos);
+        cells[x][y] = new Cell(trueX, trueY, x, y, cellWidth, cellHeight, isWall, spawnPos, goalPos); //Populate position with Cell object
         
         if(isGoal) {
-          goal = cells[x][y];
+          goal = cells[x][y]; //Record goal and spawn positions seperately
         } if(isSpawn) {
           spawn = cells[x][y];
         }
       }
     }
     
+    /* Link the cells together as neighbors */
     for(int x = 0; x < cellXNumbers; x++){
       for(int y = 0; y < cellYNumbers; y++){
         Cell current = cells[x][y];
@@ -78,7 +82,7 @@ class Map{
               continue;
             }
             
-            current.neighbours.add(cells[newX][newY]);
+            current.neighbours.add(cells[newX][newY]); //Connect the cells together
           }
         }
       }

@@ -1,13 +1,12 @@
+/* The changelog of a connection */
 class ConnectionHistory {
   int fromNode;
   int toNode;
   int innovationNumber;
 
-  ArrayList<Integer> innovationNumbers = new ArrayList<Integer>();//the innovation Numbers from the connections of the genome which first had this mutation 
-  //this represents the genome and allows us to test if another genoeme is the same
-  //this is before this connection was added
+  ArrayList<Integer> innovationNumbers = new ArrayList<Integer>(); //Create a list of unique identifiers
   
-  //constructor
+  /* Create the history */
   ConnectionHistory(int from, int to, int inno, ArrayList<Integer> innovationNos) {
     fromNode = from;
     toNode = to;
@@ -15,19 +14,16 @@ class ConnectionHistory {
     innovationNumbers = (ArrayList)innovationNos.clone();
   }
   
-  //returns whether the genome matches the original genome and the connection is between the same nodes
+  /* Check the difference between genomes */
   boolean matches(Brain brain, Node from, Node to) {
-    if (brain.genes.size() == innovationNumbers.size()) { //if the number of connections are different then the genoemes aren't the same
+    if (brain.genes.size() == innovationNumbers.size()) {
       if (from.number == fromNode && to.number == toNode) {
-        //next check if all the innovation numbers match from the genome
         for (int i = 0; i < brain.genes.size(); i++) {
-          if (!innovationNumbers.contains(brain.genes.get(i).innovationNo)) {
-            return false;
+          if (!innovationNumbers.contains(brain.genes.get(i).innovationNumber)) {
+            return false; //Return false if the connectiosn are different
           }
         }
-
-        //if reached this far then the innovationNumbers match the genes innovation numbers and the connection is between the same nodes
-        //so it does match
+        
         return true;
       }
     }

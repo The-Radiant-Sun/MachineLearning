@@ -1,3 +1,4 @@
+/* Drawing framework by code bullet */
 class PWindow extends PApplet {
   NEAT bots;
   Brain botBrain;
@@ -9,7 +10,8 @@ class PWindow extends PApplet {
     bots = t_bots;
   }
 
-  void drawBrain() {  //show the brain of whatever genome is currently showing
+  /* Display current bot brain */
+  void drawBrain() {
     int startX = 0;
     int startY = 0;
     int w = width;
@@ -29,26 +31,22 @@ class PWindow extends PApplet {
       
       botBrain = bot.brain;
       
-      //i know its ugly but it works (and is not that important) so I'm not going to mess with it
       ArrayList<ArrayList<Node>> allNodes = new ArrayList<ArrayList<Node>>();
       ArrayList<PVector> nodePoses = new ArrayList<PVector>();
       ArrayList<Integer> nodeNumbers= new ArrayList<Integer>();
   
-      //get the positions on the screen that each node is supposed to be in
-  
-  
-      //split the nodes into layers
+      //Split nodes into layers
       for (int i = 0; i < botBrain.layers; i++) {
         ArrayList<Node> temp = new ArrayList<Node>();
-        for (int j = 0; j < botBrain.nodes.size(); j++) {//for each node 
-          if (botBrain.nodes.get(j).layer == i ) {//check if it is in this layer
-            temp.add(botBrain.nodes.get(j)); //add it to this layer
+        for (int j = 0; j < botBrain.nodes.size(); j++) {
+          if (botBrain.nodes.get(j).layer == i ) {
+            temp.add(botBrain.nodes.get(j));
           }
         }
-        allNodes.add(temp);//add this layer to all nodes
+        allNodes.add(temp); //Add layer to list
       }
   
-      //for each layer add the position of the node on the screen to the node posses arraylist
+      //For each layer add the position of the node on the screen to the nodePoses arraylist
       for (int i = 0; i < botBrain.layers; i++) {
         fill(255, 0, 0);
         float x = startX + (float)((i + 1) * w) / (float)(botBrain.layers + 1.0);
@@ -59,7 +57,7 @@ class PWindow extends PApplet {
         }
       }
   
-      //draw connections 
+      //Draw connections 
       stroke(0);
       strokeWeight(2);
       for (int i = 0; i< botBrain.genes.size(); i++) {
@@ -81,7 +79,7 @@ class PWindow extends PApplet {
         line(from.x, from.y, to.x, to.y);
       }
   
-      //draw nodes last so they appear ontop of the connection lines
+      //Draw nodes
       for (int i = 0; i < nodePoses.size(); i++) {
         fill(255);
         stroke(0);

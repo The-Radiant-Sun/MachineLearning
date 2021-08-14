@@ -31,7 +31,7 @@ class Brain {
       nextNode++;
     }
 
-     //Add the bias node
+    //Add the bias node
     nodes.add(new Node(nextNode));
     biasNode = nextNode; 
     nextNode++;
@@ -89,269 +89,238 @@ class Brain {
     return output;
   }
   
-  /* sets up the NN as a list of nodes in order to be engaged */
+  /* Set up the NN as a list of nodes in order to be engaged */
   void generateNetwork() {
     //Base code framework from Code Bullet
     connectNodes();
     network = new ArrayList<Node>();
-    //for each layer add the node in that layer, since layers cannot connect to themselves there is no need to order the nodes within a layer
-
-    for (int l = 0; l < layers; l++) {//for each layer
-      for (int i = 0; i < nodes.size(); i++) {//for each node
-        if (nodes.get(i).layer == l) {//if that node is in that layer
-          network.add(nodes.get(i));
+    //For each layer add the node in that layer, since layers cannot connect to themselves there is no need to order the nodes within a layer
+    for (int l = 0; l < layers; l++) {
+      for (int i = 0; i < nodes.size(); i++) {
+        if (nodes.get(i).layer == l) {
+          network.add(nodes.get(i)); //Add the node to the network
         }
       }
     }
   }
   
-  //mutate the NN by adding a new node
-  //it does this by picking a random connection and disabling it then 2 new connections are added 
-  //1 between the input node of the disabled connection and the new node
-  //and the other between the new node and the output of the disabled connection
+  /* Add a node to the NN by choosing a random connection, disabling it, then connecting twice, creating the node */
   void addNode(ArrayList<ConnectionHistory> innovationHistory) {
     //Base code framework from Code Bullet
-    //pick a random connection to create a node between
-    if (genes.size() ==0) {
+    //Choose the connection
+    if (genes.size() == 0) {
       addConnection(innovationHistory); 
       return;
     }
     int randomConnection = floor(random(genes.size()));
 
-    while (genes.get(randomConnection).fromNode == nodes.get(biasNode) && genes.size() !=1 ) {//dont disconnect bias
-      randomConnection = floor(random(genes.size()));
+    while (genes.get(randomConnection).fromNode == nodes.get(biasNode) && genes.size() !=1 ) {
+      randomConnection = floor(random(genes.size())); //Prevent bias disconnect
     }
 
-    genes.get(randomConnection).enabled = false;//disable it
+    genes.get(randomConnection).enabled = false; //Disable the connection
 
     int newNodeNo = nextNode;
     nodes.add(new Node(newNodeNo));
-    nextNode ++;
-    //add a new connection to the new node with a weight of 1
+    nextNode++;
+    
     int connectionInnovationNumber = getInnovationNumber(innovationHistory, genes.get(randomConnection).fromNode, getNode(newNodeNo));
-    genes.add(new ConnectionGene(genes.get(randomConnection).fromNode, getNode(newNodeNo), 1, connectionInnovationNumber));
-
+    genes.add(new ConnectionGene(genes.get(randomConnection).fromNode, getNode(newNodeNo), 1, connectionInnovationNumber)); //Add a new connection with a weight of one
 
     connectionInnovationNumber = getInnovationNumber(innovationHistory, getNode(newNodeNo), genes.get(randomConnection).toNode);
-    //add a new connection from the new node with a weight the same as the disabled connection
-    genes.add(new ConnectionGene(getNode(newNodeNo), genes.get(randomConnection).toNode, genes.get(randomConnection).weight, connectionInnovationNumber));
-    getNode(newNodeNo).layer = genes.get(randomConnection).fromNode.layer +1;
+    genes.add(new ConnectionGene(getNode(newNodeNo), genes.get(randomConnection).toNode, genes.get(randomConnection).weight, connectionInnovationNumber)); //Replace the old connection with the same weight
+    getNode(newNodeNo).layer = genes.get(randomConnection).fromNode.layer + 1;
 
 
     connectionInnovationNumber = getInnovationNumber(innovationHistory, nodes.get(biasNode), getNode(newNodeNo));
-    //connect the bias to the new node with a weight of 0 
-    genes.add(new ConnectionGene(nodes.get(biasNode), getNode(newNodeNo), 0, connectionInnovationNumber));
-
-    //if the layer of the new node is equal to the layer of the output node of the old connection then a new layer needs to be created
-    //more accurately the layer numbers of all layers equal to or greater than this new node need to be incrimented
+    genes.add(new ConnectionGene(nodes.get(biasNode), getNode(newNodeNo), 0, connectionInnovationNumber)); //Connect the bias to the node
+    
     if (getNode(newNodeNo).layer == genes.get(randomConnection).toNode.layer) {
       for (int i = 0; i< nodes.size() -1; i++) {//dont include this newest node
         if (nodes.get(i).layer >= getNode(newNodeNo).layer) {
-          nodes.get(i).layer ++;
+          nodes.get(i).layer ++; //Add a new layer if the new node layer is equal to the output node layer
         }
       }
-      layers ++;
+      layers++;
     }
     connectNodes();
   }
   
-  //adds a connection between 2 nodes which aren't currently connected
+  /* Connects two nodes together */
   void addConnection(ArrayList<ConnectionHistory> innovationHistory) {
     //Base code by Code Bullet
-    //cannot add a connection to a fully connected network
     if (fullyConnected()) {
-      println("connection failed");
+      println("Connection Failed"); //Error message
       return;
     }
 
-    //get random nodes
-    int randomNode1 = floor(random(nodes.size())); 
+    int randomNode1 = floor(random(nodes.size())); //Get random nodes
     int randomNode2 = floor(random(nodes.size()));
-    while (ifConnected(randomNode1, randomNode2)) {//while the random nodes are no good
-      //get new ones
-      randomNode1 = floor(random(nodes.size())); 
+    while (ifConnected(randomNode1, randomNode2)) {
+      randomNode1 = floor(random(nodes.size())); //Choose new nodes if they are already connected
       randomNode2 = floor(random(nodes.size()));
     }
     int temp;
-    if (nodes.get(randomNode1).layer > nodes.get(randomNode2).layer) {//if the first random node is after the second then switch
-      temp = randomNode2  ;
+    if (nodes.get(randomNode1).layer > nodes.get(randomNode2).layer) {
+      temp = randomNode2; //Ensure nodes are properly ordered
       randomNode2 = randomNode1;
       randomNode1 = temp;
     }    
 
-    //get the innovation number of the connection
-    //this will be a new number if no identical genome has mutated in the same way 
-    int connectionInnovationNumber = getInnovationNumber(innovationHistory, nodes.get(randomNode1), nodes.get(randomNode2));
-    //add the connection with a random array
+    int connectionInnovationNumber = getInnovationNumber(innovationHistory, nodes.get(randomNode1), nodes.get(randomNode2)); //Retrieve the innovation value
 
-    genes.add(new ConnectionGene(nodes.get(randomNode1), nodes.get(randomNode2), random(-1, 1), connectionInnovationNumber));//changed this so if error here
+    genes.add(new ConnectionGene(nodes.get(randomNode1), nodes.get(randomNode2), random(-1, 1), connectionInnovationNumber)); //Add new connection
     connectNodes();
   }
   
   boolean ifConnected (int r1, int r2) {
     //Base code by Code Bullet
-    if (nodes.get(r1).layer == nodes.get(r2).layer) return true; // if the nodes are in the same layer 
-    if (nodes.get(r1).isConnectedTo(nodes.get(r2))) return true; //if the nodes are already connected
+    if (nodes.get(r1).layer == nodes.get(r2).layer) return true; //If the nodes are in the same layer return true
+    if (nodes.get(r1).isConnectedTo(nodes.get(r2))) return true; //If the nodes are already connected return true
     return false;
   }
   
-  //returns the innovation number for the new mutation
-  //if this mutation has never been seen before then it will be given a new unique innovation number
-  //if this mutation matches a previous mutation then it will be given the same innovation number as the previous one
+  /* Create a new innovation value for new mutations, return old innvation value for non-unique mutations */
   int getInnovationNumber(ArrayList<ConnectionHistory> innovationHistory, Node from, Node to) {
     //Base code by Code Bullet
     boolean isNew = true;
     int connectionInnovationNumber = nextConnectionNo;
-    for (int i = 0; i < innovationHistory.size(); i++) {//for each previous mutation
-      if (innovationHistory.get(i).matches(this, from, to)) {//if match found
-        isNew = false;//its not a new mutation
-        connectionInnovationNumber = innovationHistory.get(i).innovationNumber; //set the innovation number as the innovation number of the match
+    for (int i = 0; i < innovationHistory.size(); i++) {
+      if (innovationHistory.get(i).matches(this, from, to)) {
+        isNew = false; //Mutation is not new
+        connectionInnovationNumber = innovationHistory.get(i).innovationNumber; //Retrieve old mutation number
         break;
       }
     }
 
-    if (isNew) {//if the mutation is new then create an arrayList of integers representing the current state of the genome
-      ArrayList<Integer> innoNumbers = new ArrayList<Integer>();
-      for (int i = 0; i< genes.size(); i++) {//set the innovation numbers
-        innoNumbers.add(genes.get(i).innovationNo);
+    if (isNew) {
+      ArrayList<Integer> innoNumbers = new ArrayList<Integer>(); //Create new array representing the current genome if the mutation is new
+      for (int i = 0; i< genes.size(); i++) {
+        innoNumbers.add(genes.get(i).innovationNumber);
       }
 
-      //then add this mutation to the innovationHistory 
-      innovationHistory.add(new ConnectionHistory(from.number, to.number, connectionInnovationNumber, innoNumbers));
+      innovationHistory.add(new ConnectionHistory(from.number, to.number, connectionInnovationNumber, innoNumbers)); //Add new mutation to the innvation history
       nextConnectionNo++;
     }
     return connectionInnovationNumber;
   }
   
-  //returns whether the network is fully connected or not
+  /* returns whether or not the network is fully connected */
   boolean fullyConnected() {
     //Base code by Code Bullet
     int maxConnections = 0;
-    int[] nodesInLayers = new int[layers];//array which stored the amount of nodes in each layer
+    int[] nodesInLayers = new int[layers];
 
-    //populate array
     for (int i =0; i< nodes.size(); i++) {
-      nodesInLayers[nodes.get(i).layer] +=1;
+      nodesInLayers[nodes.get(i).layer] += 1; //Fill the array with the nodes
     }
 
-    //for each layer the maximum amount of connections is the number in this layer * the number of nodes infront of it
-    //so lets add the max for each layer together and then we will get the maximum amount of connections in the network
     for (int i = 0; i < layers-1; i++) {
       int nodesInFront = 0;
-      for (int j = i+1; j < layers; j++) {//for each layer infront of this layer
-        nodesInFront += nodesInLayers[j];//add up nodes
+      for (int j = i+1; j < layers; j++) {
+        nodesInFront += nodesInLayers[j]; //Add nodes for every layer infront of the current layer
       }
 
-      maxConnections += nodesInLayers[i] * nodesInFront;
+      maxConnections += nodesInLayers[i] * nodesInFront; //Generates the maximum possible connections within the network
     }
 
-    if (maxConnections == genes.size()) {//if the number of connections is equal to the max number of connections possible then it is full
-      return true;
+    if (maxConnections == genes.size()) {
+      return true; //Return true if the network is fully connected
     }
     return false;
   }
   
-  //mutates the genome
+  /* Mutate the genome */
   void mutate(ArrayList<ConnectionHistory> innovationHistory) {
     //Base code by Code Bullet
-    if (genes.size() ==0) {
+    if (genes.size() == 0) {
       addConnection(innovationHistory);
     }
 
     float rand1 = random(1);
-    if (rand1<0.8) { // 80% of the time mutate weights
-      for (int i = 0; i< genes.size(); i++) {
-        genes.get(i).mutateWeight();
+    if (rand1 < 0.8) {
+      for (int i = 0; i < genes.size(); i++) {
+        genes.get(i).mutateWeight(); //Mutate weights 80% of the time
       }
     }
-    //5% of the time add a new connection
     float rand2 = random(1);
-    if (rand2<0.08) {
-      addConnection(innovationHistory);
+    if (rand2 < 0.08) {
+      addConnection(innovationHistory); //Add a new connection 8% of the time
     }
 
-    //1% of the time add a node
     float rand3 = random(1);
-    if (rand3<0.02) {
-      addNode(innovationHistory);
+    if (rand3 < 0.02) {
+      addNode(innovationHistory); //Add a new node 2% of the time
     }
   }
   
-  //called when this Genome is better that the other parent
+  /* Mix the traits of two genomes */
   Brain crossover(Brain parent2) {
     //Base code by Code Bullet
-    Brain child = new Brain(inputs, outputs, true);
+    Brain child = new Brain(inputs, outputs, true); //Create the new genome
     child.genes.clear();
     child.nodes.clear();
     child.layers = layers;
     child.nextNode = nextNode;
     child.biasNode = biasNode;
-    ArrayList<ConnectionGene> childGenes = new ArrayList<ConnectionGene>();//list of genes to be inherrited form the parents
+    ArrayList<ConnectionGene> childGenes = new ArrayList<ConnectionGene>(); //Form the required list of genes
     ArrayList<Boolean> isEnabled = new ArrayList<Boolean>(); 
-    //all inherrited genes
-    for (int i = 0; i< genes.size(); i++) {
-      boolean setEnabled = true;//is this node in the chlid going to be enabled
+    
+    for (int i = 0; i < genes.size(); i++) {
+      boolean setEnabled = true;
+      int parent2gene = matchingGene(parent2, genes.get(i).innovationNumber);
+      if (parent2gene != -1) { //If the genes match
+        if (!genes.get(i).enabled || !parent2.genes.get(parent2gene).enabled) { //If either of the matching genes are disabled
 
-      int parent2gene = matchingGene(parent2, genes.get(i).innovationNo);
-      if (parent2gene != -1) {//if the genes match
-        if (!genes.get(i).enabled || !parent2.genes.get(parent2gene).enabled) {//if either of the matching genes are disabled
-
-          if (random(1) < 0.75) {//75% of the time disabel the childs gene
-            setEnabled = false;
+          if (random(1) < 0.75) {
+            setEnabled = false; //Disable the gene 75% of the time
           }
         }
+        
         float rand = random(1);
         if (rand < 0.5) {
-          childGenes.add(genes.get(i));
-
-          //get gene from this fucker
+          childGenes.add(genes.get(i)); //Add gene from paret one 50% of the time
         } else {
-          //get gene from parent2
-          childGenes.add(parent2.genes.get(parent2gene));
+          childGenes.add(parent2.genes.get(parent2gene)); //Add gene from parent two 50% of the time
         }
-      } else {//disjoint or excess gene
-        childGenes.add(genes.get(i));
+      } else {
+        childGenes.add(genes.get(i)); //Add excess genes
         setEnabled = genes.get(i).enabled;
       }
       isEnabled.add(setEnabled);
     }
-
-    //since all excess and disjoint genes are inherrited from the more fit parent (this Genome) the childs structure is no different from this parent | with exception of dormant connections being enabled but this won't effect nodes
-    //so all the nodes can be inherrited from this parent
+    
     for (int i = 0; i < nodes.size(); i++) {
-      child.nodes.add(nodes.get(i).clone());
+      child.nodes.add(nodes.get(i).clone()); //Inherit all nodes
     }
 
-    //clone all the connections so that they connect the childs new nodes
-
     for ( int i = 0; i < childGenes.size(); i++) {
-      child.genes.add(childGenes.get(i).clone(child.getNode(childGenes.get(i).fromNode.number), child.getNode(childGenes.get(i).toNode.number)));
+      child.genes.add(childGenes.get(i).clone(child.getNode(childGenes.get(i).fromNode.number), child.getNode(childGenes.get(i).toNode.number))); //Inherit all connections
       child.genes.get(i).enabled = isEnabled.get(i);
     }
 
     child.connectNodes();
-    return child;
+    return child; //Return the new genome
   }
   
-    //create an empty genome
+  /* Create an empty genome */
   Brain(int in, int out, boolean crossover) {
-    //set input number and output number
     inputs = in; 
     outputs = out;
   }
   
-  //returns whether or not there is a gene matching the input innovation number  in the input genome
+  /* Return if a gene matching the input innovation number is found */
   int matchingGene(Brain parent2, int innovationNumber) {
     //Base code by Code Bullet
-    for (int i =0; i < parent2.genes.size(); i++) {
-      if (parent2.genes.get(i).innovationNo == innovationNumber) {
+    for (int i = 0; i < parent2.genes.size(); i++) {
+      if (parent2.genes.get(i).innovationNumber == innovationNumber) {
         return i;
       }
     }
-    return -1; //no matching gene found
+    return -1; //No matching gene found
   }
   
-  //prints out info about the genome to the console 
+  /* Prints genome information */
   void printGenome() {
     println("Print genome  layers:", layers);  
     println("bias node: "  + biasNode);
@@ -360,8 +329,8 @@ class Brain {
       print(nodes.get(i).number + ",");
     }
     println("Genes");
-    for (int i = 0; i < genes.size(); i++) {//for each connectionGene 
-      println("gene " + genes.get(i).innovationNo, "From node " + genes.get(i).fromNode.number, "To node " + genes.get(i).toNode.number, 
+    for (int i = 0; i < genes.size(); i++) {
+      println("gene " + genes.get(i).innovationNumber, "From node " + genes.get(i).fromNode.number, "To node " + genes.get(i).toNode.number, 
         "is enabled " +genes.get(i).enabled, "from layer " + genes.get(i).fromNode.layer, "to layer " + genes.get(i).toNode.layer, "weight: " + genes.get(i).weight);
     }
 
@@ -369,18 +338,16 @@ class Brain {
   }
   
   
-  //returns a copy of this genome
+  /* Return a copy of this genome */
   Brain clone() {
     Brain clone = new Brain(inputs, outputs, true);
 
-    for (int i = 0; i < nodes.size(); i++) {//copy nodes
-      clone.nodes.add(nodes.get(i).clone());
+    for (int i = 0; i < nodes.size(); i++) {
+      clone.nodes.add(nodes.get(i).clone()); //Copy all nodews
     }
 
-    //copy all the connections so that they connect the clone new nodes
-
-    for ( int i =0; i<genes.size(); i++) {//copy genes
-      clone.genes.add(genes.get(i).clone(clone.getNode(genes.get(i).fromNode.number), clone.getNode(genes.get(i).toNode.number)));
+    for ( int i = 0; i < genes.size(); i++) {//copy genes
+      clone.genes.add(genes.get(i).clone(clone.getNode(genes.get(i).fromNode.number), clone.getNode(genes.get(i).toNode.number))); //Copy all connections
     }
 
     clone.layers = layers;
@@ -388,42 +355,36 @@ class Brain {
     clone.biasNode = biasNode;
     clone.connectNodes();
 
-    return clone;
+    return clone; //Return clone
   }
   
-  //draw the genome on the screen
+  /* Draw the genome on the screen */
   void drawGenome(int startX, int startY, int w, int h) {
     //Code by Code Bullet
     ArrayList<ArrayList<Node>> allNodes = new ArrayList<ArrayList<Node>>();
     ArrayList<PVector> nodePoses = new ArrayList<PVector>();
     ArrayList<Integer> nodeNumbers= new ArrayList<Integer>();
-
-    //get the positions on the screen that each node is supposed to be in
-
-
-    //split the nodes into layers
+    
     for (int i = 0; i < layers; i++) {
       ArrayList<Node> temp = new ArrayList<Node>();
-      for (int j = 0; j< nodes.size(); j++) {//for each node 
-        if (nodes.get(j).layer == i ) {//check if it is in this layer
-          temp.add(nodes.get(j)); //add it to this layer
+      for (int j = 0; j < nodes.size(); j++) {
+        if (nodes.get(j).layer == i ) {
+          temp.add(nodes.get(j)); //Arange the nodes according to the current layer
         }
       }
-      allNodes.add(temp);//add this layer to all nodes
+      allNodes.add(temp); //Add the current layer to array
     }
-
-    //for each layer add the position of the node on the screen to the node posses arraylist
+    
     for (int i = 0; i < layers; i++) {
       fill(255, 0, 0);
       float x = startX + (float)((i + 1) * w) / (float)(layers + 1.0);
-      for (int j = 0; j < allNodes.get(i).size(); j++) {//for the position in the layer
+      for (int j = 0; j < allNodes.get(i).size(); j++) {
         float y = startY + ((float)(j + 1.0) * h)/(float)(allNodes.get(i).size() + 1.0);
-        nodePoses.add(new PVector(x, y));
-        nodeNumbers.add(allNodes.get(i).get(j).number);
+        nodePoses.add(new PVector(x, y)); //Add node position to array
+        nodeNumbers.add(allNodes.get(i).get(j).number); //Add node number to array
       }
     }
-
-    //draw connections 
+    
     stroke(0);
     strokeWeight(2);
     for (int i = 0; i< genes.size(); i++) {
@@ -434,8 +395,8 @@ class Brain {
       }
       PVector from;
       PVector to;
-      from = nodePoses.get(nodeNumbers.indexOf(genes.get(i).fromNode.number));
-      to = nodePoses.get(nodeNumbers.indexOf(genes.get(i).toNode.number));
+      from = nodePoses.get(nodeNumbers.indexOf(genes.get(i).fromNode.number)); //Draw conections
+      to = nodePoses.get(nodeNumbers.indexOf(genes.get(i).toNode.number)); //Draw connections
       if (genes.get(i).weight > 0) {
         stroke(255, 0, 0);
       } else {
@@ -444,13 +405,12 @@ class Brain {
       strokeWeight(map(abs(genes.get(i).weight), 0, 1, 0, 5));
       line(from.x, from.y, to.x, to.y);
     }
-
-    //draw nodes last so they appear ontop of the connection lines
+    
     for (int i = 0; i < nodePoses.size(); i++) {
       fill(255);
       stroke(0);
       strokeWeight(1);
-      ellipse(nodePoses.get(i).x, nodePoses.get(i).y, 20, 20);
+      ellipse(nodePoses.get(i).x, nodePoses.get(i).y, 20, 20); //Draw nodes ontop of connections
       textSize(10);
       fill(0);
       textAlign(CENTER, CENTER);

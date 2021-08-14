@@ -22,6 +22,7 @@ class NEAT {
   int deadBots;
   boolean allDead;
   
+  /* Initializer */
   NEAT(float t_botSize, int t_botNumber) {
     botSize = t_botSize;
     botNumber = t_botNumber;
@@ -36,17 +37,19 @@ class NEAT {
     spawn = t_spawn;
   }
   
+  /* Generate bots for allocated spawn size */
   void spawn() {
     bots = new ArrayList<Bot>();
     for(int i = 0; i < botNumber; i++) {
-      bots.add(new Bot(map.goal, map.spawn, botSize));
-      bots.get(i).brain.generateNetwork();
-      bots.get(i).brain.mutate(innovationHistory);
+      bots.add(new Bot(map.goal, map.spawn, botSize)); //Create the bot
+      bots.get(i).brain.generateNetwork(); //Give it a mind
+      bots.get(i).brain.mutate(innovationHistory); //Make it unique
     }
     
-    generation++;
+    generation++; //Log the new generation
   }
   
+  /* Chooses genes based on a skewed choice */
   Bot selectGenes(float sumFitness) {
     float chance = random(sumFitness);
     float i = 0;
@@ -61,13 +64,12 @@ class NEAT {
     return null;
   }
   
-  //sets the best player globally and for this gen
+  /* Sets the best player globally and for this generation */
   void setBestPlayer() {
     Bot tempBest =  species.get(0).bots.get(0);
     tempBest.generation = generation;
 
-    //if best this gen is better than the global best score then set the global best as the best this gen
-
+    //Records globally if it is the best of all generations
     if (tempBest.score > bestScore) {
       botGen.add(tempBest.clone());
       println("old best:", bestScore);
@@ -77,97 +79,93 @@ class NEAT {
     }
   }
   
+  /* Use principals of natural selection to increase capability of bot generations over long periods */
   void naturalSelection() {
-    speciate();//seperate the population into species 
-    calculateFitness();//calculate the fitness of each player
-    sortSpecies();//sort the species to be ranked in fitness order, best first
+    speciate(); //Seperate the population into species 
+    calculateFitness(); //Calculate the fitness of each player
+    sortSpecies(); //Sort the species to be ranked in fitness order, best first
     
     if (massExtinctionEvent) { 
-      massExtinction();
+      massExtinction(); //Eliminate multiple species if needed
       massExtinctionEvent = false;
     }
     
-    cullSpecies();//kill off the bottom half of each species
-    setBestPlayer();//save the best player of this gen
-    killStaleSpecies();//remove species which haven't improved in the last 15(ish) generations
-    killBadSpecies();//kill species which are so bad that they cant reproduce
+    cullSpecies(); //Eliminate the bottom half of each species
+    setBestPlayer(); //Save the best player of this generation
+    killStaleSpecies(); //Remove species which haven't improved in the last 15 generations
+    killBadSpecies(); //Kill species which are not viable
 
 
-    println("generation", generation, "Number of mutations", innovationHistory.size(), "species: " + species.size());
+    println("generation", generation, "Number of mutations", innovationHistory.size(), "species: " + species.size()); //Log current data
 
 
     float averageSum = getAvgFitnessSum();
-    ArrayList<Bot> children = new ArrayList<Bot>();//the next generation
+    ArrayList<Bot> children = new ArrayList<Bot>();
     println("Species:");               
-    for (int j = 0; j < species.size(); j++) {//for each species
-
+    for (int j = 0; j < species.size(); j++) {
       println("best unadjusted fitness:", species.get(j).bestFitness);
       for (int i = 0; i < species.get(j).bots.size(); i++) {
-        print("Bot " + i, "fitness: " +  species.get(j).bots.get(i).fitness, "score " + species.get(j).bots.get(i).score, ' ');
+        print("Bot " + i, "fitness: " + species.get(j).bots.get(i).fitness, "score " + species.get(j).bots.get(i).score, ' '); //Record data
       }
       println();
-      children.add(species.get(j).bestBot.clone());//add champion without any mutation
+      children.add(species.get(j).bestBot.clone()); //Re-insert best bot copy
 
-      int NoOfChildren = floor(species.get(j).averageFitness/averageSum * bots.size()) -1;//the number of children this species is allowed, note -1 is because the champ is already added
-      for (int i = 0; i< NoOfChildren; i++) {//get the calculated amount of children from this species
+      int NoOfChildren = floor(species.get(j).averageFitness/averageSum * bots.size()) -1; //Allocated child branches this species is allowed
+      for (int i = 0; i< NoOfChildren; i++) {
         children.add(species.get(j).createChild(innovationHistory));
       }
     }
 
-    while (children.size() < bots.size()) {//if not enough babies (due to flooring the number of children to get a whole int) 
-      children.add(species.get(0).createChild(innovationHistory));//get babies from the best species
+    while (children.size() < bots.size()) {
+      children.add(species.get(0).createChild(innovationHistory)); //If current population is not sufficiant then populate with the most fit species
     }
     bots.clear();
-    bots = (ArrayList)children.clone(); //set the children as the current population
+    bots = (ArrayList)children.clone(); //Set the children as the current population
     generation += 1;
-    for (int i = 0; i< bots.size(); i++) {//generate networks for each of the children
-      bots.get(i).brain.generateNetwork();
+    for (int i = 0; i< bots.size(); i++) {
+      bots.get(i).brain.generateNetwork(); //Give the childeren direction
     }
   }
   
-  //seperate population into species based on how similar they are to the leaders of each species in the previous gen
+  /* Seperate population into species */
   void speciate() {
-    for (Species s : species) {//empty species
+    for (Species s : species) {
       s.bots.clear();
     }
-    for (int i = 0; i < bots.size(); i++) {//for each player
+    for (int i = 0; i < bots.size(); i++) {
       boolean speciesFound = false;
-      for (Species s : species) {//for each species
-        if (s.sameSpecies(bots.get(i).brain)) {//if the player is similar enough to be considered in the same species
-          s.addToSpecies(bots.get(i));//add it to the species
+      for (Species s : species) {
+        if (s.sameSpecies(bots.get(i).brain)) {
+          s.addToSpecies(bots.get(i));
           speciesFound = true;
           break;
         }
       }
-      if (!speciesFound) {//if no species was similar enough then add a new species with this as its champion
-        species.add(new Species(bots.get(i)));
+      if (!speciesFound) {
+        species.add(new Species(bots.get(i))); //Create new species if diversion is significant
       }
     }
   }
   
-  //calculates the fitness of all of the players 
   void calculateFitness() {
     for (Bot bot : bots) {
       bot.calculateFitness();
     }
   }
   
-  //sorts the players within a species and the species by their fitnesses
+  /* Sorts the bots and species by their fitnesses */
   void sortSpecies() {
-    //sort the players within a species
     for (Species s : species) {
       s.sortSpecies();
     }
-
-    //sort the species by the fitness of its best player
-    //using selection sort like a loser
+    
     ArrayList<Species> temp = new ArrayList<Species>();
     for (int i = 0; i < species.size(); i ++) {
       float max = 0;
       int maxIndex = 0;
       for (int j = 0; j< species.size(); j++) {
         if (species.get(j).bestFitness > max) {
-          max = species.get(j).bestFitness;
+          max = species.get(j).bestFitness; //Compare best fitnessess across species
           maxIndex = j;
         }
       }
@@ -178,7 +176,7 @@ class NEAT {
     species = (ArrayList)temp.clone();
   }
   
-  //kills all species which haven't improved in 15 generations
+  /* Kills all species which haven't improved in 15 generations */
   void killStaleSpecies() {
     for (int i = 2; i< species.size(); i++) {
       if (species.get(i).staleness >= 15) {
@@ -188,7 +186,7 @@ class NEAT {
     }
   }
   
-  //if a species sucks so much that it wont even be allocated 1 child for the next generation then kill it now
+  /* If a species is unable to reproduce then eliminate it */
   void killBadSpecies() {
     float averageSum = getAvgFitnessSum();
 
@@ -199,8 +197,7 @@ class NEAT {
       }
     }
   }
-  
-  //returns the sum of each species average fitness
+
   float getAvgFitnessSum() {
     float averageSum = 0;
     for (Species s : species) {
@@ -209,18 +206,18 @@ class NEAT {
     return averageSum;
   }
 
-  //kill the bottom half of each species
+  /* Removes the bottom half of each species */
   void cullSpecies() {
     for (Species s : species) {
-      s.cull(); //kill bottom half
-      s.fitnessSharing();//also while we're at it lets do fitness sharing
-      s.setAverage();//reset averages because they will have changed
+      s.cull();
+      s.fitnessSharing();
+      s.setAverage();
     }
   }
   
   void massExtinction() {
     for (int i =5; i< species.size(); i++) {
-      species.remove(i);//sad
+      species.remove(i);
       i--;
     }
   }
