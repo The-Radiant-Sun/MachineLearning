@@ -128,15 +128,13 @@ class Species {
     } else {
       Bot parent1 = selectBot(); //Find two random parents
       Bot parent2 = selectBot();
-      
       if (parent1.fitness < parent2.fitness) {
         child =  parent2.crossover(parent1); //Use the highest rated genome as the base
       } else {
         child =  parent1.crossover(parent2);
       }
     }
-    
-    child.brain.mutate(innovationHistory); //Make the child unique
+    child.brain.mutate(innovationHistory); //Make the child unique  <--Crash here
     return child;
   }
   

@@ -109,19 +109,20 @@ class NEAT {
       }
       println();
       children.add(species.get(j).bestBot.clone()); //Re-insert best bot copy
-
       int NoOfChildren = floor(species.get(j).averageFitness/averageSum * bots.size()) -1; //Allocated child branches this species is allowed
       for (int i = 0; i< NoOfChildren; i++) {
         children.add(species.get(j).createChild(innovationHistory));
       }
     }
-
+    print(4);
     while (children.size() < bots.size()) {
       children.add(species.get(0).createChild(innovationHistory)); //If current population is not sufficiant then populate with the most fit species
     }
+    print(5);
     bots.clear();
     bots = (ArrayList)children.clone(); //Set the children as the current population
     generation += 1;
+    print(6);
     for (int i = 0; i< bots.size(); i++) {
       bots.get(i).brain.generateNetwork(); //Give the childeren direction
     }

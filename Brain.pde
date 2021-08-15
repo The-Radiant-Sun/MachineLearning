@@ -112,12 +112,13 @@ class Brain {
       addConnection(innovationHistory); 
       return;
     }
+    
     int randomConnection = floor(random(genes.size()));
-
-    while (genes.get(randomConnection).fromNode == nodes.get(biasNode) && genes.size() !=1 ) {
+    int count = 0;
+    while (genes.get(randomConnection).fromNode == nodes.get(biasNode) && genes.size() !=1 && count <= 5000) {
+      count++;
       randomConnection = floor(random(genes.size())); //Prevent bias disconnect
     }
-
     genes.get(randomConnection).enabled = false; //Disable the connection
 
     int newNodeNo = nextNode;
@@ -126,11 +127,10 @@ class Brain {
     
     int connectionInnovationNumber = getInnovationNumber(innovationHistory, genes.get(randomConnection).fromNode, getNode(newNodeNo));
     genes.add(new ConnectionGene(genes.get(randomConnection).fromNode, getNode(newNodeNo), 1, connectionInnovationNumber)); //Add a new connection with a weight of one
-
     connectionInnovationNumber = getInnovationNumber(innovationHistory, getNode(newNodeNo), genes.get(randomConnection).toNode);
+    
     genes.add(new ConnectionGene(getNode(newNodeNo), genes.get(randomConnection).toNode, genes.get(randomConnection).weight, connectionInnovationNumber)); //Replace the old connection with the same weight
     getNode(newNodeNo).layer = genes.get(randomConnection).fromNode.layer + 1;
-
 
     connectionInnovationNumber = getInnovationNumber(innovationHistory, nodes.get(biasNode), getNode(newNodeNo));
     genes.add(new ConnectionGene(nodes.get(biasNode), getNode(newNodeNo), 0, connectionInnovationNumber)); //Connect the bias to the node
@@ -144,6 +144,7 @@ class Brain {
       layers++;
     }
     connectNodes();
+    print(9);
   }
   
   /* Connects two nodes together */
@@ -236,7 +237,6 @@ class Brain {
     if (genes.size() == 0) {
       addConnection(innovationHistory);
     }
-
     float rand1 = random(1);
     if (rand1 < 0.8) {
       for (int i = 0; i < genes.size(); i++) {
@@ -247,7 +247,6 @@ class Brain {
     if (rand2 < 0.08) {
       addConnection(innovationHistory); //Add a new connection 8% of the time
     }
-
     float rand3 = random(1);
     if (rand3 < 0.02) {
       addNode(innovationHistory); //Add a new node 2% of the time
