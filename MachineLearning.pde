@@ -73,7 +73,7 @@ void draw(){
     startPath = true;
   } else if(pressed("r")) { //Reset if pressed r
     setup();
-  } else if(pressed("c") || bots.generation < 500) { //Clear the board of walls if pressed c or under 500 generations have run
+  } else if(pressed("c")) { //Clear the board of walls if pressed c or under 500 generations have run
     for(int x = 0; x < xCellCount; x++) {
       for(int y = 0; y < yCellCount; y++) {
         map.cells[x][y].isWall = false;
